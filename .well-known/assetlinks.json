@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.magiccard",
+      "sha256_cert_fingerprints": [
+        "AC:8C:1C:69:85:C6:2E:B4:AB:CF:43:5A:69:7C:0B:DA:DA:18:B8:EF:C1:54:10:EB:88:E1:EF:06:1A:37:64:21"
+      ]
+    }
+  }
+]
