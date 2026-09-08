@@ -46,7 +46,7 @@ def page(title, content, prefix='./', active='home', description=None):
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)} · {e(config['title'])}</title><meta name="description" content="{e(description or config['description'], quote=True)}">
 <meta name="theme-color" content="#f5f5f2"><link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="{prefix}assets/style.css"><script src="{prefix}assets/main.js" defer></script></head>
-<body><a class="skip" href="#main">跳至内容</a><div class="shell"><header class="header"><a class="brand" href="{prefix}index.html"><span class="brand-icon">冰</span><span>{e(config['title'])}<small>AI SOLUTIONS & ENGINEERING</small></span></a><nav aria-label="主导航">{nav}</nav></header>
+<body><a class="skip" href="#main">跳至内容</a><div class="shell"><header class="header"><a class="brand" href="{prefix}index.html" aria-label="白冰 · 首页"><span class="brand-icon" aria-hidden="true">冰</span></a><nav aria-label="主导航">{nav}</nav></header>
 <main id="main">{content}</main><footer><span>© {date.today().year} {e(config['author'])} · AI Solutions & Engineering</span><span>从问题出发，在交付中持续迭代。</span></footer></div></body></html>'''
 
 def meta(p):
