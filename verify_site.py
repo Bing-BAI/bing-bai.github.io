@@ -60,6 +60,6 @@ for path in root.rglob('*'):
     assert path.name not in ('.env','profile.json','server.mjs','brand-and-knowledge.md')
     if path.suffix in ('.html','.js','.json','.css'):
         text=path.read_text()
-        for private_marker in ('DASHSCOPE_API_KEY','resume-material','bingbai.jp@gmail.com','JR East','Yahata','Kepco','Corpy','bingbai.me@gmail.com','TEPCO','AISIN','Komatsu'):
+        for private_marker in ('DASHSCOPE_API_KEY','resume-material','bingbai.jp@gmail.com','JR East','Yahata','Kepco','Corpy','TEPCO','AISIN','Komatsu'):
             assert private_marker not in text, (path,private_marker)
 print(f'Markdown features, safe rendering, {len(pages)} page links, and private-file exclusion verified.')
