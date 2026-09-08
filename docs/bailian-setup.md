@@ -24,12 +24,17 @@ flowchart LR
 
 在百炼控制台选择**华北 2（北京）**和目标业务空间，创建文档搜索类知识库。
 
-本地 `.local/bailian-knowledge/` 已准备四份匿名资料，只用于这次上传前审阅，没有进入 GitHub 或静态站点。请先检查内容准确性，再上传这些文件，保持文件名：
+本地 `.local/bailian-knowledge/` 已准备九份匿名资料，只用于这次上传前审阅，没有进入 GitHub 或静态站点。请先检查内容准确性，再上传这些文件，保持文件名：
 
 - `01-profile.md`：个人背景与能力
 - `02-visual-product-search.md`：零件识别与检索案例
 - `03-visual-inspection.md`：异常检测案例
-- `04-customer-delivery.md`：客户部署案例
+- `04-customer-delivery.md`：客户部署与产品复盘
+- `05-boiler-extraction.md`：设备铭牌信息抽取
+- `06-driving-diagnosis.md`：双摄驾驶诊断
+- `07-edge-localization.md`：视觉定位模型量化
+- `08-shovel-edge-ai.md`：工程机械活动识别
+- `09-sensor-model-compression.md`：传感器选择与模型压缩
 
 等待解析和索引完成。第一版先用控制台默认切分与检索参数，在测试问题中观察遗漏，再调整召回。不要把原始知识图库、工作日志、客户报告、代码仓库或完整简历批量导入。
 
@@ -100,7 +105,7 @@ docker build --platform linux/amd64 -t YOUR_REGISTRY/bing-agent:1 ./backend
 
 后端只接受 `{ "question": "你的问题" }`，APP_ID、Key 和知识库由服务器/百炼固定控制。回答仅展示已知知识文档映射的公开网站链接，不回传内部文档地址、检索原文、文件 ID 或推理过程。没有有效来源，或出现不在公开映射内的文档时，返回资料不足。
 
-保持四个上传文档的文件名；如百炼实际返回的 `doc_name` 不同，检查后端 `SOURCE_MAP` 并显式增加对应关系。不要为了显示回答而删除来源检查。
+保持上传文档的文件名；如百炼实际返回的 `doc_name` 不同，检查后端 `SOURCE_MAP` 并显式增加对应关系。不要为了显示回答而删除来源检查。
 
 ## 6. 上线验收
 

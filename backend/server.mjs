@@ -7,6 +7,11 @@ const SOURCE_MAP = {
   '02-visual-product-search': {title: '工业零件识别与检索', path: '/projects/visual-product-search.html'},
   '03-visual-inspection': {title: '铁路设备异常检测', path: '/projects/visual-inspection.html'},
   '04-customer-delivery': {title: '制造业系统交付', path: '/projects/customer-delivery.html'},
+  '05-boiler-extraction': {title: '设备铭牌信息抽取', path: '/projects/boiler-extraction.html'},
+  '06-driving-diagnosis': {title: '双摄驾驶诊断', path: '/projects/driving-diagnosis.html'},
+  '07-edge-localization': {title: '视觉定位模型量化', path: '/projects/edge-localization.html'},
+  '08-shovel-edge-ai': {title: '工程机械活动识别', path: '/projects/shovel-edge-ai.html'},
+  '09-sensor-model-compression': {title: '传感器选择与模型压缩', path: '/projects/sensor-model-compression.html'},
 };
 const NO_EVIDENCE = '目前公开资料中没有足够的可引用依据来回答这个问题。你可以查看项目和个人介绍，或换一个关于技术经历的问题。';
 

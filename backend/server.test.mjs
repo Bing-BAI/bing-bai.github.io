@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createApp, normalizeAnswer} from './server.mjs';
@@ -58,4 +59,13 @@ test('global rate cap prevents further billable calls', async t => {
   for (let i=0;i<20;i++) assert.equal((await call({question:'hello'})).status,200);
   assert.equal((await call({question:'hello'})).status,429);
   assert.equal(count,20);
+});
+
+test('every project knowledge document resolves to its public article regardless of display order', () => {
+  const profile = JSON.parse(readFileSync(new URL('../profile.json', import.meta.url), 'utf8'));
+  for (const project of profile.projects) {
+    const result = normalizeAnswer({output:{text:'项目说明[1]',doc_references:[{index_id:'1',doc_name:project.knowledge_id+'.md'}]}});
+    assert.equal(result.sources.length,1,project.slug);
+    assert.equal(result.sources[0].url,origin+'/projects/'+project.slug+'.html');
+  }
 });

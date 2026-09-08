@@ -4,7 +4,7 @@
 
 ## 当前内容
 
-首页展示个人定位、三类能力与三个匿名案例。文章归档集中展示「项目经历」与「技术思考」，项目卡片支持横向滚动；首页保留这两个栏目的入口。原来的三篇示例仍保留独立链接，在首页与归档中隐藏。真实文章尚待添加。
+首页展示个人定位、三类能力与八篇匿名项目与研究文章。文章归档集中展示「项目经历」与「技术思考」，项目卡片支持横向滚动；首页保留这两个栏目的入口。原来的三篇示例仍保留独立链接，在首页与归档中隐藏。真实文章尚待添加。
 
 AI 助手界面和 Node.js 后端已实现，默认关闭。需在北京百炼创建并发布知识库应用、配置后端密钥并完成真实调用验证，才能启用。详见 [百炼连接与部署](docs/bailian-setup.md)。
 
@@ -49,7 +49,9 @@ summary: 记录如何确定技术路径，以及过程中的取舍。
 ## 修改品牌内容
 
 - `site.json`：站名、介绍和后端公开 URL（不能放密钥）
-- `profile.json`：个人定位、能力、匿名项目七项拆解、教育、认证与技能
+- `profile.json`：个人定位、价值主张、六种工作方法、项目元数据、教育与认证
+- `projects/*.md`：八篇项目与研究文章的七项拆解正文
+- `project_content.py`：加载并校验项目文章的结构
 - `assets/style.css`：网站样式
 - `backend/agent-prompt.md`：百炼智能体的系统提示词
 - `backend/server.mjs`：北京百炼应用 API 代理
@@ -73,4 +75,6 @@ node --test backend/server.test.mjs
 
 ## 同步百炼知识资料
 
-修改公开项目或认证后，运行 `python3 export_knowledge.py`，会在被 Git 忽略的 `.local/bailian-knowledge/` 生成四份 Markdown，并更新 `.local/bailian-knowledge.zip`。脚本仅读取整理过的 `profile.json`，不读取原始资料、不执行上传。审阅后，在百炼替换对应文件并等待索引更新。
+修改公开项目或认证后，运行 `python3 export_knowledge.py`，会在被 Git 忽略的 `.local/bailian-knowledge/` 生成九份 Markdown，并更新 `.local/bailian-knowledge.zip`。脚本仅读取整理过的 `profile.json` 和 `projects/*.md`，不读取原始资料、不执行上传。审阅后，在百炼替换对应文件并等待索引更新。
+
+项目正文须依次包含七个二级标题：目标、输入、用户流程、输出、任务边界、验收标准、迭代。标题、卡片摘要和 `knowledge_id` 在 `profile.json` 维护。现有知识文档 ID 保持稳定，调整展示顺序不会改变上传文件名。新增项目时同步维护后端来源白名单，并运行后端测试验证映射。

@@ -6,11 +6,12 @@ import json
 import shutil
 import re
 from rendering import markdown
+from project_content import load_profile
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / '_site'
 config = json.loads((ROOT / 'site.json').read_text())
-profile = json.loads((ROOT / 'profile.json').read_text())
+profile = load_profile(ROOT)
 
 
 posts = []
@@ -46,7 +47,7 @@ def page(title, content, prefix='./', active='home', description=None):
 <title>{e(title)} · {e(config['title'])}</title><meta name="description" content="{e(description or config['description'], quote=True)}">
 <meta name="theme-color" content="#f5f5f2"><link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="{prefix}assets/style.css"><script src="{prefix}assets/main.js" defer></script></head>
 <body><a class="skip" href="#main">跳至内容</a><div class="shell"><header class="header"><a class="brand" href="{prefix}index.html"><span class="brand-icon">B.</span><span>{e(config['title'])}<small>AI SOLUTIONS & ENGINEERING</small></span></a><nav aria-label="主导航">{nav}</nav></header>
-<main id="main">{content}</main><footer><span>© {date.today().year} {e(config['author'])} · AI Solutions & Engineering</span><span>从问题出发，以交付为终点。</span></footer></div></body></html>'''
+<main id="main">{content}</main><footer><span>© {date.today().year} {e(config['author'])} · AI Solutions & Engineering</span><span>从问题出发，在交付中持续迭代。</span></footer></div></body></html>'''
 
 def meta(p):
     return f'<span class="category">{e(p["category"])}</span><time datetime="{p["date"]}">{p["date"].replace("-", ".")}</time>' + ('<span class="sample">示例文章</span>' if p.get('sample') == 'true' else '')
@@ -60,7 +61,7 @@ filters = '<div class="filters" role="group" aria-label="按分类筛选" hidden
 def project_card(p, i):
     return f'<a class="project-card" href="./projects/{p["slug"]}.html"><div class="project-top"><span>{i:02} / 项目经历</span><span aria-hidden="true">↗</span></div><p class="project-domain">{e(p["domain"])}</p><h3>{e(p["title"])}</h3><p>{e(p["challenge"])}</p><div class="tags">' + ''.join(f'<span>{e(t)}</span>' for t in p['tags']) + '</div></a>'
 
-hero = f'''<section class="brand-hero"><div class="hero-copy"><div class="eyebrow">{e(profile['role'])}</div><h1>让 AI 走出实验，<br><span>进入真实业务。</span></h1><p>{e(profile['intro'])}</p><div class="hero-actions"><a class="primary-link" href="#projects">探索我的项目 <span>↗</span></a><a class="text-link" href="./ask.html">向我的 Agent 提问 →</a></div></div><aside class="identity-card"><div class="identity-monogram">B.</div><h2>{e(profile['english_name'])}<span> / {e(profile['name'])}</span></h2><p>AI SOLUTIONS & ENGINEERING</p><div class="identity-detail"><span>关注</span><strong>方案设计 · 模型 · 交付</strong></div><div class="identity-detail"><span>研究</span><strong>高效学习与模型压缩</strong></div><a href="./about.html">认识我 <span>↗</span></a></aside></section>'''
+hero = f'''<section class="brand-hero"><div class="hero-copy"><div class="eyebrow">{e(profile['role'])}</div><h1>让 AI 走出实验，<br><span>进入真实业务。</span></h1><p>{e(profile['intro'])}</p><div class="hero-actions"><a class="primary-link" href="#projects">探索我的项目 <span>↗</span></a><a class="text-link" href="./ask.html">向我的 Agent 提问 →</a></div></div><aside class="identity-card"><div class="identity-monogram">B.</div><h2>{e(profile['english_name'])}<span> / {e(profile['name'])}</span></h2><p>AI SOLUTIONS & ENGINEERING</p><div class="identity-detail"><span>关注</span><strong>{e(profile["focus"])}</strong></div><div class="identity-detail"><span>研究</span><strong>高效学习与模型压缩</strong></div><a href="./about.html">认识我 <span>↗</span></a></aside></section>'''
 capabilities = '<section class="capabilities" aria-label="专业能力">' + ''.join(f'<div><span class="eyebrow">0{i}</span><h2>{e(c["title"])}</h2><p>{e(c["text"])}</p><small>{e(c["tags"])}</small></div>' for i,c in enumerate(profile['capabilities'],1)) + '</section>'
 def project_section(*, archive=False):
     destination = '' if archive else '<a href="./archive.html#projects">全部项目 →</a>'
@@ -81,7 +82,14 @@ social_links = '<div class="social-links" aria-label="社交平台">' + ''.join(
     f'<a class="social-link" href="{e(profile[key],quote=True)}" target="_blank" rel="noopener noreferrer" aria-label="访问白冰的 {label} 主页（在新标签页打开）"><img src="./assets/icons/{key}.svg" width="26" height="26" alt="" aria-hidden="true"></a>'
     for key, label in [('github', 'GitHub'), ('medium', 'Medium')] if profile.get(key)
 ) + '</div>'
-about = f'<section class="simple-head"><div class="eyebrow">ABOUT BING</div><h1>{e(profile["english_name"])} / {e(profile["name"])}</h1><p>{e(profile["role"])}</p></section><article class="prose about"><p>{e(config["about"])}</p>' + certificates + f'<h2>我的工作方式</h2><p>{e(profile["background"])}</p><p>先明确目标与输入，再梳理用户流程、输出和任务边界，用验收标准检验结果，在迭代中修正技术路径。把业务约束、模型能力和工程交付放在同一个问题里思考。</p><h2>教育与研究</h2><ul>' + ''.join(f'<li>{e(x)}</li>' for x in profile['education']) + '</ul><h2>技术工具</h2><div class="tags">' + ''.join(f'<span>{e(x)}</span>' for x in profile['skills']) + '</div><h2>建立连接</h2>' + social_links + '</article>'
+about_intro = '<div class="about-intro">' + ''.join(f'<p>{e(text)}</p>' for text in profile['about_paragraphs']) + '</div>'
+values = '<section class="about-values"><h2>我能带来的价值</h2><div class="value-grid">' + ''.join(f'<div class="value-card"><h3>{e(v["title"])}</h3><p>{e(v["text"])}</p></div>' for v in profile['value_propositions']) + '</div></section>'
+goal = f'<section class="about-goal"><span class="eyebrow">我的目标</span><h2>{e(profile["goal"]["statement"])}</h2><p>{e(profile["goal"]["description"])}</p></section>'
+methods = '<section class="about-methods"><h2>我的工作方法</h2><p class="section-intro">把复杂问题变得可理解、可验证，再把有效经验沉淀为下一次可以复用的方法。</p><ol class="method-grid">' + ''.join(f'<li><span class="method-number" aria-hidden="true">{i:02}</span><h3>{e(m["title"])}</h3><p class="method-principle">{e(m["principle"])}</p><p>{e(m["practice"])}</p></li>' for i,m in enumerate(profile['methods'],1)) + '</ol></section>'
+career = '<section class="about-career"><h2>职业与研究脉络</h2><ol class="career-list">' + ''.join(f'<li><h3>{e(item["title"])}</h3><p>{e(item["text"])}</p></li>' for item in profile['career']) + '</ol></section>'
+education = '<section><h2>教育与语言</h2><ul>' + ''.join(f'<li>{e(x)}</li>' for x in profile['education']) + '</ul><div class="language-list">' + ''.join(f'<span>{e(x)}</span>' for x in profile['languages']) + '</div></section>'
+skills = '<section class="about-skills"><h2>技术能力</h2>' + ''.join(f'<div class="skill-row"><h3>{e(group["title"])}</h3><div class="tags">' + ''.join(f'<span>{e(item)}</span>' for item in group['items']) + '</div></div>' for group in profile['skill_groups']) + '</section>'
+about = f'<section class="simple-head"><div class="eyebrow">ABOUT BING</div><h1>{e(profile["english_name"])} / {e(profile["name"])}</h1><p>{e(profile["role"])}</p></section><article class="prose about">' + about_intro + values + goal + methods + career + certificates + education + skills + '<h2>建立连接</h2>' + social_links + '</article>'
 (OUT / 'about.html').write_text(page('关于我', about, active='about'))
 (OUT / 'projects').mkdir(exist_ok=True)
 for p in profile['projects']:
