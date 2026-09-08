@@ -80,3 +80,30 @@ if (form && form.dataset.api) {
   });
   void connect();
 }
+
+// Native scrolling remains available without JavaScript; buttons add mouse navigation.
+document.querySelectorAll('.projects-section').forEach(section => {
+  const track = section.querySelector('.projects-grid');
+  const controls = section.querySelector('.carousel-controls');
+  if (!track || !controls) return;
+  const previous = controls.querySelector('[data-scroll="-1"]');
+  const next = controls.querySelector('[data-scroll="1"]');
+  function update() {
+    const max = Math.max(0, track.scrollWidth - track.clientWidth);
+    controls.hidden = max <= 2;
+    previous.disabled = track.scrollLeft <= 2;
+    next.disabled = track.scrollLeft >= max - 2;
+  }
+  controls.addEventListener('click', event => {
+    const button = event.target.closest('button[data-scroll]');
+    if (!button || button.disabled) return;
+    const card = track.querySelector('.project-card');
+    const step = (card?.getBoundingClientRect().width || track.clientWidth * .8) + (parseFloat(getComputedStyle(track).columnGap) || 0);
+    track.scrollBy({left: Number(button.dataset.scroll) * step,
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
+  });
+  track.addEventListener('scroll', update, {passive:true});
+  if ('ResizeObserver' in window) new ResizeObserver(update).observe(track);
+  else window.addEventListener('resize', update);
+  update();
+});
