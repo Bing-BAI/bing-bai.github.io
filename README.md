@@ -49,7 +49,7 @@ summary: 记录如何确定技术路径，以及过程中的取舍。
 ## 修改品牌内容
 
 - `site.json`：站名、介绍和后端公开 URL（不能放密钥）
-- `profile.json`：个人定位、能力、匿名项目、教育与技能
+- `profile.json`：个人定位、能力、匿名项目七项拆解、教育、认证与技能
 - `assets/style.css`：网站样式
 - `backend/agent-prompt.md`：百炼智能体的系统提示词
 - `backend/server.mjs`：北京百炼应用 API 代理
@@ -70,3 +70,7 @@ node --test backend/server.test.mjs
 ```
 
 后端测试使用模拟百炼响应，不连接真实模型、不产生费用；不能替代上线后的真实知识库验收。
+
+## 同步百炼知识资料
+
+修改公开项目或认证后，运行 `python3 export_knowledge.py`，会在被 Git 忽略的 `.local/bailian-knowledge/` 生成四份 Markdown，并更新 `.local/bailian-knowledge.zip`。脚本仅读取整理过的 `profile.json`，不读取原始资料、不执行上传。审阅后，在百炼替换对应文件并等待索引更新。

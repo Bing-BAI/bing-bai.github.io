@@ -68,12 +68,20 @@ writing = '<section id="writing" class="writing-section"><div class="section-tit
 (OUT / 'index.html').write_text(page('首页', hero + capabilities + projects + writing))
 archive = '<section class="simple-head"><div class="eyebrow">FIELD NOTES</div><h1>阿冰成长记录</h1><p>从项目实践中沉淀方法，在持续学习中更新判断。</p></section>' + filters + articles + '<p class="filter-status sr-only" aria-live="polite"></p>'
 (OUT / 'archive.html').write_text(page('文章归档', archive, active='archive'))
-about = f'<section class="simple-head"><div class="eyebrow">ABOUT BING</div><h1>{e(profile["english_name"])} / {e(profile["name"])}</h1><p>{e(profile["role"])}</p></section><article class="prose about"><p>{e(config["about"])}</p><h2>我的工作方式</h2><p>{e(profile["background"])}</p><p>从业务目标和实际约束出发，明确需要验证的假设，再把模型、数据与系统连接起来。交付中的问题，也会成为下一次方案设计的起点。</p><h2>教育与研究</h2><ul>' + ''.join(f'<li>{e(x)}</li>' for x in profile['education']) + '</ul><h2>技术工具</h2><div class="tags">' + ''.join(f'<span>{e(x)}</span>' for x in profile['skills']) + f'</div><h2>建立连接</h2><p><a href="{e(profile["github"],quote=True)}">GitHub · Bing-BAI ↗</a></p></article>'
+certificates = '<section class="certifications" aria-label="专业认证"><h2>专业认证</h2>' + ''.join(
+    f'<div class="certification-card"><span class="certification-mark" aria-hidden="true">ACP</span><div><h3>{e(c["title"])}</h3><p class="certification-name">{e(c["official_name"])}</p><p class="certification-meta">{e(c["issuer"])} · 有效期至 <time datetime="{e(c["valid_until"],quote=True)}">{e(c["valid_until"])}</time></p></div></div>'
+    for c in profile.get('certifications', [])
+) + '</section>'
+about = f'<section class="simple-head"><div class="eyebrow">ABOUT BING</div><h1>{e(profile["english_name"])} / {e(profile["name"])}</h1><p>{e(profile["role"])}</p></section><article class="prose about"><p>{e(config["about"])}</p>' + certificates + f'<h2>我的工作方式</h2><p>{e(profile["background"])}</p><p>先明确目标与输入，再梳理用户流程、输出和任务边界，用验收标准检验结果，在迭代中修正技术路径。把业务约束、模型能力和工程交付放在同一个问题里思考。</p><h2>教育与研究</h2><ul>' + ''.join(f'<li>{e(x)}</li>' for x in profile['education']) + '</ul><h2>技术工具</h2><div class="tags">' + ''.join(f'<span>{e(x)}</span>' for x in profile['skills']) + f'</div><h2>建立连接</h2><p><a href="{e(profile["github"],quote=True)}">GitHub · Bing-BAI ↗</a></p></article>'
 (OUT / 'about.html').write_text(page('关于我', about, active='about'))
 (OUT / 'projects').mkdir(exist_ok=True)
 for p in profile['projects']:
-    content = f'<div class="reading"><a class="back" href="../index.html#projects">← 返回项目</a><header class="article-head"><div class="eyebrow">{e(p["domain"])}</div><h1>{e(p["title"])}</h1><p>{e(p["role"])}</p></header><article class="prose"><h2>业务问题</h2><p>{e(p["challenge"])}</p><h2>我的贡献与方法</h2><p>{e(p["contribution"])}</p><h2>项目范围</h2><p>{e(p["boundary"])}</p></article><div class="article-end">客户信息已匿名化 · 仅展示个人参与范围</div><a class="back" href="../ask.html">向 AI 助手了解更多 →</a></div>'
+    sections = p['case_study']
+    outline = '<nav class="case-nav" aria-label="项目拆解目录">' + ''.join(f'<a href="#case-{e(section["id"],quote=True)}"><span>{i:02}</span> {e(section["title"])}</a>' for i, section in enumerate(sections, 1)) + '</nav>'
+    body = ''.join(f'<section id="case-{e(section["id"],quote=True)}" class="case-section"><h2><span class="case-number">{i:02}</span>{e(section["title"])}</h2>{markdown(section["content"])}</section>' for i, section in enumerate(sections, 1))
+    content = f'<div class="reading"><a class="back" href="../index.html#projects">← 返回项目</a><header class="article-head"><div class="eyebrow">{e(p["domain"])}</div><h1>{e(p["title"])}</h1><p>{e(p["role"])}</p></header>{outline}<article class="prose case-study">{body}</article><div class="article-end">客户信息已匿名化 · 仅展示个人参与范围</div><a class="back" href="../ask.html">向 AI 助手了解更多 →</a></div>'
     (OUT / 'projects' / f'{p["slug"]}.html').write_text(page(p['title'], content, prefix='../', active='', description=p['challenge']))
+
 for p in posts:
     content = f'<div class="reading"><a class="back" href="../archive.html">← 返回文章列表</a><header class="article-head"><div class="meta">{meta(p)}</div><h1>{e(p["title"])}</h1><p>{e(p["summary"])}</p></header><article class="prose">{p["body"]}</article><div class="article-end">— 谢谢你读到这里 —</div><a class="back" href="../archive.html">浏览全部记录 →</a></div>'
     (OUT / 'posts' / f'{p["slug"]}.html').write_text(page(p['title'], content, prefix='../', active='', description=p['summary']))
