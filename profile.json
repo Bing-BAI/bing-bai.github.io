@@ -1,0 +1,21 @@
+{
+  "name": "白冰",
+  "english_name": "Bing Bai",
+  "role": "AI 解决方案工程师 / FDE",
+  "headline": "让 AI 走出实验，\n进入真实业务。",
+  "intro": "连接业务需求、模型能力与工程交付。关注视觉 AI、多模态与 RAG，以及真实环境中的部署约束。",
+  "github": "https://github.com/Bing-BAI",
+  "capabilities": [
+    {"title": "从问题到方案", "text": "理解业务目标，识别数据、算力和现场约束，设计可验证的技术路径。", "tags": "Solution design / PoC"},
+    {"title": "从模型到系统", "text": "将视觉 AI、检索与模型能力连接到后端、数据库和业务流程。", "tags": "Computer vision / RAG / Backend"},
+    {"title": "从验证到交付", "text": "处理离线环境、边缘算力与系统集成中的实际问题，让技术适配现场。", "tags": "Deployment / Edge AI"}
+  ],
+  "projects": [
+    {"slug": "visual-product-search", "title": "从一张图片，找到产品规格", "domain": "工业零件 · 视觉识别与检索", "role": "视觉算法与后端开发；RAG 方案设计", "challenge": "产品图片不足时，如何把视觉测量与规格数据连接起来？", "contribution": "参与视觉测量、规格匹配与后端开发，探索视觉属性提取与文本向量检索的组合方案。", "boundary": "RAG 部分为后续方案设计，区别于已有视觉与后端开发工作。", "tags": ["Computer vision", "Vector search", "Backend"]},
+    {"slug": "visual-inspection", "title": "缺陷很少，问题也要看清楚", "domain": "铁路设备 · 异常检测", "role": "异常检测实验与流水线分析", "challenge": "缺陷样本有限，且上游图像处理质量会影响下游判断。", "contribution": "参与无监督异常检测实验、数据转换和推理验证，分析多阶段流水线的级联依赖与分割瓶颈。", "boundary": "展示实验、工程诊断与个人贡献，不推断生产环境的最终效果。", "tags": ["Anomaly detection", "PyTorch", "Pipeline"]},
+    {"slug": "customer-delivery", "title": "让 AI 适应客户的真实环境", "domain": "制造业 · 视频分析与交付", "role": "后端、QA 与客户部署", "challenge": "视频时间轴、离线环境与现场数据变化，都可能影响系统使用。", "contribution": "参与后端开发、数据迁移、系统测试和离线部署，排查视频帧率导致的时间对齐问题。", "boundary": "项目经历按个人参与范围展示，客户信息已匿名化。", "tags": ["Docker", "Video analysis", "Delivery"]}
+  ],
+  "background": "企业 AI 项目实践，覆盖视觉检测、模型优化、后端开发与客户部署。研究背景为模型压缩、传感器选择和高效活动识别。",
+  "education": ["东京工业大学 · 人工智能硕士", "中山大学 · 软件工程学士"],
+  "skills": ["Python", "PyTorch", "OpenCV", "FastAPI", "PostgreSQL", "Docker", "ONNX", "RAG"]
+}

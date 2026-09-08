@@ -1,52 +1,32 @@
-"""Build a dependency-free blog. Supported Markdown: paragraphs, ## headings, quotes, lists."""
+"""Build the public site; only explicitly selected content is exported."""
 from pathlib import Path
 from html import escape as e
 from datetime import date
 import json
 import shutil
+import re
+from rendering import markdown
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / '_site'
 config = json.loads((ROOT / 'site.json').read_text())
+profile = json.loads((ROOT / 'profile.json').read_text())
 
-def markdown(text):
-    blocks, paragraph, items = [], [], []
-    def flush():
-        if paragraph:
-            blocks.append('<p>' + e(' '.join(paragraph)) + '</p>')
-            paragraph.clear()
-        if items:
-            blocks.append('<ul>' + ''.join('<li>' + e(x) + '</li>' for x in items) + '</ul>')
-            items.clear()
-    for line in text.splitlines():
-        if not line.strip():
-            flush()
-        elif line.startswith('## '):
-            flush()
-            blocks.append('<h2>' + e(line[3:]) + '</h2>')
-        elif line.startswith('> '):
-            flush()
-            blocks.append('<blockquote>' + e(line[2:]) + '</blockquote>')
-        elif line.startswith('- '):
-            if paragraph:
-                flush()
-            items.append(line[2:])
-        else:
-            if items:
-                flush()
-            paragraph.append(line)
-    flush()
-    return '\n'.join(blocks)
 
 posts = []
 for path in (ROOT / 'posts').glob('*.md'):
-    _, front, body = path.read_text().split('---', 2)
+    match = re.match(r'\A---\r?\n(.*?)\r?\n---(?:\r?\n|\Z)(.*)\Z', path.read_text(), re.S)
+    if not match:
+        raise ValueError(f'{path}: invalid front matter')
+    front, body = match.groups()
     post = dict(line.split(':', 1) for line in front.strip().splitlines())
     post = {k.strip(): v.strip() for k, v in post.items()}
     for key in ('title', 'date', 'category', 'summary'):
         if not post.get(key):
             raise ValueError(f'{path}: missing {key}')
     date.fromisoformat(post['date'])
+    if post.get('draft') == 'true' or post['date'] > date.today().isoformat():
+        continue
     post.update(slug=path.stem, body=markdown(body))
     posts.append(post)
 posts.sort(key=lambda p: (p['date'], p['slug']), reverse=True)
@@ -60,13 +40,13 @@ if (ROOT / '.well-known').exists():
     shutil.copytree(ROOT / '.well-known', OUT / '.well-known', dirs_exist_ok=True)
 
 def page(title, content, prefix='./', active='home', description=None):
-    nav = ''.join(f'<a href="{prefix}{href}" {"aria-current=page" if key == active else ""}>{label}</a>' for key, href, label in [('home','index.html','首页'), ('archive','archive.html','文章归档'), ('about','about.html','关于我')])
+    nav = ''.join(f'<a href="{prefix}{href}" {"aria-current=page" if key == active else ""}>{label}</a>' for key, href, label in [('home','index.html','首页'), ('archive','archive.html','文章归档'), ('about','about.html','关于我'), ('ask','ask.html','向 AI 提问')])
     return f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)} · {e(config['title'])}</title><meta name="description" content="{e(description or config['description'], quote=True)}">
-<meta name="theme-color" content="#f8f9f5"><link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="{prefix}assets/style.css"><script src="{prefix}assets/main.js" defer></script></head>
-<body><a class="skip" href="#main">跳至内容</a><div class="shell"><header class="header"><a class="brand" href="{prefix}index.html"><span class="brand-icon">冰</span><span>{e(config['title'])}<small>A BING’S JOURNAL</small></span></a><nav aria-label="主导航">{nav}</nav></header>
-<main id="main">{content}</main><footer><span>© {date.today().year} {e(config['author'])} · 把日子写成自己的故事</span><span>写在此刻，留给未来。</span></footer></div></body></html>'''
+<meta name="theme-color" content="#f5f5f2"><link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="{prefix}assets/style.css"><script src="{prefix}assets/main.js" defer></script></head>
+<body><a class="skip" href="#main">跳至内容</a><div class="shell"><header class="header"><a class="brand" href="{prefix}index.html"><span class="brand-icon">B.</span><span>{e(config['title'])}<small>AI SOLUTIONS & ENGINEERING</small></span></a><nav aria-label="主导航">{nav}</nav></header>
+<main id="main">{content}</main><footer><span>© {date.today().year} {e(config['author'])} · AI Solutions & Engineering</span><span>从问题出发，以交付为终点。</span></footer></div></body></html>'''
 
 def meta(p):
     return f'<span class="category">{e(p["category"])}</span><time datetime="{p["date"]}">{p["date"].replace("-", ".")}</time>' + ('<span class="sample">示例文章</span>' if p.get('sample') == 'true' else '')
@@ -74,18 +54,34 @@ def meta(p):
 def card(p, index):
     return f'''<article class="post-row" data-category="{e(p['category'], quote=True)}"><span class="post-number">{index:02}</span><div><div class="meta">{meta(p)}</div><h3><a href="./posts/{p['slug']}.html">{e(p['title'])}</a></h3><p>{e(p['summary'])}</p></div><span class="row-arrow" aria-hidden="true">↗</span></article>'''
 
-categories = list(dict.fromkeys(p['category'] for p in posts))
+published = [p for p in posts if p.get('sample') != 'true']
+categories = list(dict.fromkeys(p['category'] for p in published))
 filters = '<div class="filters" role="group" aria-label="按分类筛选" hidden>' + ''.join(f'<button type="button" aria-pressed="{str(i == 0).lower()}" data-filter="{e(c, quote=True)}">{e(c)}</button>' for i,c in enumerate(['全部文章'] + categories)) + '</div>'
-hero = f'''<section class="hero"><div class="eyebrow"><span class="dot"></span> 一份持续生长的个人记录</div><h1>认真生活，<br>慢慢<span class="accent">生长。</span></h1><p>{e(config['description'])}<br>{e(config['tagline'])}</p><a class="hero-link" href="#writing">翻开我的记录 <span aria-hidden="true">↓</span></a><div class="hero-aside"><span>生活 / 学习 / 成长</span><span class="large-quote">“</span><p>把微小的进步，<br>写进漫长的日子。</p><span class="aside-line"></span><small>NOTES TO MY FUTURE SELF</small></div></section>'''
-sidebar = f'''<aside class="sidebar"><div class="profile"><span class="avatar">冰</span><h2>你好，我是{e(config['author'])}。</h2><p>{e(config['about'])}</p><a href="./about.html">更多关于我 <span aria-hidden="true">↗</span></a></div><div class="side-note"><span class="eyebrow">关于这里</span><p>不急着成为谁，<br>先记录每一个真实的自己。</p><span class="small-label">保持好奇 · 持续记录</span></div></aside>'''
-home = hero + f'<div class="content-grid"><section id="writing"><div class="section-title"><h2>最近的记录</h2><span>{len(posts):02} 篇文字</span></div>{filters}<div class="post-list">' + ''.join(card(p,i+1) for i,p in enumerate(posts)) + f'</div><p class="filter-status sr-only" aria-live="polite"></p></section>{sidebar}</div>'
-(OUT / 'index.html').write_text(page('首页', home))
-archive = '<section class="simple-head"><div class="eyebrow">THE ARCHIVE</div><h1>沿途的记录</h1><p>把散落的日子，连成一条成长的线。</p></section>' + filters + ''.join(card(p,i+1) for i,p in enumerate(posts)) + '<p class="filter-status sr-only" aria-live="polite"></p>'
+def project_card(p, i):
+    return f'<a class="project-card" href="./projects/{p["slug"]}.html"><div class="project-top"><span>0{i} / SELECTED WORK</span><span aria-hidden="true">↗</span></div><p class="project-domain">{e(p["domain"])}</p><h3>{e(p["title"])}</h3><p>{e(p["challenge"])}</p><div class="tags">' + ''.join(f'<span>{e(t)}</span>' for t in p['tags']) + '</div></a>'
+
+hero = f'''<section class="brand-hero"><div class="hero-copy"><div class="eyebrow">{e(profile['role'])}</div><h1>让 AI 走出实验，<br><span>进入真实业务。</span></h1><p>{e(profile['intro'])}</p><div class="hero-actions"><a class="primary-link" href="#projects">探索我的项目 <span>↗</span></a><a class="text-link" href="./ask.html">向我的 AI 助手提问 →</a></div></div><aside class="identity-card"><div class="identity-monogram">B.</div><h2>{e(profile['english_name'])}<span> / {e(profile['name'])}</span></h2><p>AI SOLUTIONS & ENGINEERING</p><div class="identity-detail"><span>关注</span><strong>方案设计 · 模型 · 交付</strong></div><div class="identity-detail"><span>研究</span><strong>高效学习与模型压缩</strong></div><a href="./about.html">认识我 <span>↗</span></a></aside></section>'''
+capabilities = '<section class="capabilities" aria-label="专业能力">' + ''.join(f'<div><span class="eyebrow">0{i}</span><h2>{e(c["title"])}</h2><p>{e(c["text"])}</p><small>{e(c["tags"])}</small></div>' for i,c in enumerate(profile['capabilities'],1)) + '</section>'
+projects = '<section id="projects" class="projects-section"><div class="section-title"><div><span class="eyebrow">SELECTED WORK</span><h2>用项目，说明我如何解决问题。</h2></div><span>部分客户信息已匿名化</span></div><div class="projects-grid">' + ''.join(project_card(p,i) for i,p in enumerate(profile['projects'],1)) + '</div></section>'
+articles = ''.join(card(p,i+1) for i,p in enumerate(published)) or '<div class="writing-empty"><p>技术文章正在整理。</p><span>接下来会在这里分享项目复盘、技术判断与工程实践。</span></div>'
+writing = '<section id="writing" class="writing-section"><div class="section-title"><div><span class="eyebrow">FIELD NOTES</span><h2>阿冰成长记录</h2></div><a href="./archive.html">全部文章 →</a></div>' + articles + '</section>'
+(OUT / 'index.html').write_text(page('首页', hero + capabilities + projects + writing))
+archive = '<section class="simple-head"><div class="eyebrow">FIELD NOTES</div><h1>阿冰成长记录</h1><p>从项目实践中沉淀方法，在持续学习中更新判断。</p></section>' + filters + articles + '<p class="filter-status sr-only" aria-live="polite"></p>'
 (OUT / 'archive.html').write_text(page('文章归档', archive, active='archive'))
-about = f'<section class="simple-head"><div class="eyebrow">A LITTLE ABOUT ME</div><h1>你好，我是{e(config["author"])}。</h1><p>{e(config["tagline"])}</p></section><article class="prose about"><p>{e(config["about"])}</p><h2>在这里记录什么</h2><p>学习中一点一滴的收获，生活里值得收藏的片刻，以及成长途中反复思考的问题。</p><h2>写给未来的自己</h2><p>希望回头看时，能看见走过的路，也能认出每一个阶段认真生活的自己。</p><a href="./archive.html">去看看沿途的记录 →</a></article>'
+about = f'<section class="simple-head"><div class="eyebrow">ABOUT BING</div><h1>{e(profile["english_name"])} / {e(profile["name"])}</h1><p>{e(profile["role"])}</p></section><article class="prose about"><p>{e(config["about"])}</p><h2>我的工作方式</h2><p>{e(profile["background"])}</p><p>从业务目标和实际约束出发，明确需要验证的假设，再把模型、数据与系统连接起来。交付中的问题，也会成为下一次方案设计的起点。</p><h2>教育与研究</h2><ul>' + ''.join(f'<li>{e(x)}</li>' for x in profile['education']) + '</ul><h2>技术工具</h2><div class="tags">' + ''.join(f'<span>{e(x)}</span>' for x in profile['skills']) + f'</div><h2>建立连接</h2><p><a href="{e(profile["github"],quote=True)}">GitHub · Bing-BAI ↗</a></p></article>'
 (OUT / 'about.html').write_text(page('关于我', about, active='about'))
+(OUT / 'projects').mkdir(exist_ok=True)
+for p in profile['projects']:
+    content = f'<div class="reading"><a class="back" href="../index.html#projects">← 返回项目</a><header class="article-head"><div class="eyebrow">{e(p["domain"])}</div><h1>{e(p["title"])}</h1><p>{e(p["role"])}</p></header><article class="prose"><h2>业务问题</h2><p>{e(p["challenge"])}</p><h2>我的贡献与方法</h2><p>{e(p["contribution"])}</p><h2>项目范围</h2><p>{e(p["boundary"])}</p></article><div class="article-end">客户信息已匿名化 · 仅展示个人参与范围</div><a class="back" href="../ask.html">向 AI 助手了解更多 →</a></div>'
+    (OUT / 'projects' / f'{p["slug"]}.html').write_text(page(p['title'], content, prefix='../', active='', description=p['challenge']))
 for p in posts:
-    content = f'<div class="reading"><a class="back" href="../index.html#writing">← 返回文章列表</a><header class="article-head"><div class="meta">{meta(p)}</div><h1>{e(p["title"])}</h1><p>{e(p["summary"])}</p></header><article class="prose">{p["body"]}</article><div class="article-end">— 谢谢你读到这里 —</div><a class="back" href="../archive.html">浏览全部记录 →</a></div>'
+    content = f'<div class="reading"><a class="back" href="../archive.html">← 返回文章列表</a><header class="article-head"><div class="meta">{meta(p)}</div><h1>{e(p["title"])}</h1><p>{e(p["summary"])}</p></header><article class="prose">{p["body"]}</article><div class="article-end">— 谢谢你读到这里 —</div><a class="back" href="../archive.html">浏览全部记录 →</a></div>'
     (OUT / 'posts' / f'{p["slug"]}.html').write_text(page(p['title'], content, prefix='../', active='', description=p['summary']))
+api_url = config.get('agent_api_url', '').strip()
+if api_url and not api_url.startswith('https://'):
+    raise ValueError('agent_api_url must use HTTPS')
+questions = ['白冰主要擅长哪些 AI 技术？', '有哪些从模型到系统的项目经验？', '在 RAG 项目中承担过什么工作？']
+ask = '<section class="simple-head"><div class="eyebrow">ASK BING’S AI</div><h1>从一个问题，认识我。</h1><p>了解我的项目经历、技术方向与工作方式。</p></section><section class="chat-panel" aria-label="个人知识助手"><div class="chat-intro"><span class="agent-mark">B.</span><div><h2>白冰的 AI 助手</h2><p>根据经确认的个人资料回答，并展示回答依据。</p></div></div><div class="question-chips">' + ''.join(f'<button type="button" data-question="{e(q,quote=True)}" disabled>{e(q)} ↗</button>' for q in questions) + f'</div><p id="agent-status" role="status">' + ('正在连接知识助手…' if api_url else '知识助手正在准备中。你可以先浏览项目和个人介绍。') + f'</p><div id="conversation" role="log" aria-live="polite" aria-label="问答记录"></div><form id="ask-form" data-api="{e(api_url,quote=True)}"><label for="question">你的问题</label><textarea id="question" name="question" rows="3" maxlength="1000" placeholder="例如：白冰是怎样处理客户的离线部署需求的？" disabled required></textarea><div class="compose-footer"><small>问题会发送给阿里云百炼处理，请勿填写私人信息。每次提问独立回答。</small><button class="primary-link" type="submit" disabled>发送问题 ↗</button></div></form><noscript>请启用 JavaScript 使用知识助手。</noscript></section>'
+(OUT / 'ask.html').write_text(page('向 AI 提问', ask, active='ask'))
 (OUT / '.nojekyll').touch()
-print(f'Built {len(posts)} articles and 3 pages in {OUT}')
+print(f'Built brand site: {len(profile["projects"])} projects, {len(published)} published articles, agent configured: {bool(api_url)}')

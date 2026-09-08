@@ -1,66 +1,72 @@
-# 阿冰成长记录
+# Bing Bai / 白冰
 
-一个适合 GitHub Pages 的中文个人博客。暖白纸感、绿色点缀，包含首页、分类筛选、文章归档、关于我和独立文章页面。适配手机，关闭 JavaScript 也能浏览全部文章。
+个人品牌网站：AI 解决方案、匿名项目案例、技术记录，以及使用阿里云百炼 RAG 的问答入口。前端部署在 GitHub Pages，后端单独部署。
 
-## 本地预览
+## 当前内容
 
-需要 Python 3.9 或更高版本，无需安装依赖：
+首页展示个人定位、三类能力与三个匿名案例。「阿冰成长记录」保留为写作栏目。原来的三篇示例仍保留独立链接，在首页与归档中隐藏。真实文章尚待添加。
+
+AI 助手界面和 Node.js 后端已实现，默认关闭。需在北京百炼创建并发布知识库应用、配置后端密钥并完成真实调用验证，才能启用。详见 [百炼连接与部署](docs/bailian-setup.md)。
+
+## 本地构建和预览
+
+需要 Python 3.10+：
 
 ```sh
-python3 build.py
-python3 -m http.server 8000 --directory _site
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python build.py
+.venv/bin/python -m http.server 8000 --directory _site
 ```
 
-打开 http://localhost:8000 。修改后重新运行构建，再刷新浏览器。
+打开 http://localhost:8000 。修改源文件后重新构建并刷新。
 
-## 发布到 GitHub Pages
+## 写文章
 
-1. 在自己的 GitHub 账号下创建仓库。个人主页可使用 `你的用户名.github.io`，也可使用普通仓库名（如 `blog`）。
-2. 将本项目源文件（包括 `.github` 目录）上传或推送到仓库的 `main` 分支，不需要上传 `_site`。
-3. 进入仓库 **Settings → Pages → Build and deployment → Source**，选择 **GitHub Actions**。
-4. 在 **Actions** 中运行 **Publish blog to GitHub Pages → Run workflow**。以后每次推送到 `main` 都会自动更新博客。
-5. 部署成功后，在 **Settings → Pages** 或工作流部署结果中查看真实网址。
-
-官方说明：https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
-
-页面使用相对链接，兼容个人域名根目录和普通仓库的子目录。若默认分支不是 `main`，同步修改 `.github/workflows/pages.yml` 的分支名。
-
-## 发布新文章
-
-在 `posts/` 新建一个 Markdown 文件，例如 `2026-09-08-my-first-post.md`。文件名请使用英文、数字和短横线，它也是文章链接的一部分：
+在 `posts/` 新建英文文件名，例如 `2026-09-08-first-project.md`：
 
 ```md
 ---
-title: 我的第一篇成长记录
+title: 从一个业务问题开始
 date: 2026-09-08
-category: 成长随笔
-summary: 一句话介绍这篇文章。
+category: 项目复盘
+summary: 记录如何确定技术路径，以及过程中的取舍。
 ---
-这里写正文。
+## 问题与约束
 
-## 今天的小收获
+这里支持 **加粗**、*斜体*、[链接](https://github.com/Bing-BAI)。
 
-写下一个具体的进步。
-
-- 一件学会的事
-- 一个想继续探索的问题
-
-> 留给未来自己的一句话。
+- 数据条件
+- 运行环境
 ```
 
-这个轻量构建器支持段落、二级标题、无序列表、引用。不处理完整 Markdown 语法（如链接、图片、加粗和代码块），HTML 会被转义为文字。日期须为 `YYYY-MM-DD`。每篇文章都会公开发布；不要放入草稿或私人内容，未来日期也不会自动隐藏。
+支持 1–6 级标题、段落、有序/无序及嵌套列表、引用、加粗、斜体、删除线、链接、图片、行内代码、围栏代码块、表格、分隔线。禁用原始 HTML 执行。不内置数学公式、脚注、任务复选框或 Mermaid 渲染；不是全部 GitHub 扩展语法。
 
-三篇初始内容均为示例，不代表你的真实经历。可删除或改写；正式文章移除 `sample: true` 即可。归档和分类自动从文章生成。
+使用 markdown-it-py 按 CommonMark 基础语法加表格和删除线扩展渲染。图片可放入 `assets/`，文章中使用 `../assets/文件名.png`；图片路径相对于生成后的文章页。代码块带语言标识，但当前不做彩色语法高亮。
 
-## 修改个人信息
+元数据仍是简单的单行 `key: value`，不是完整 YAML。日期必须为 `YYYY-MM-DD`；`draft: true` 和未来日期的文章不会生成公开页面。移除 `sample: true` 后，文章会出现在首页和归档。
 
-编辑 `site.json` 的博客名称、作者、简介和标语。关于页的其他文字在 `build.py` 中，视觉样式在 `assets/style.css` 中。
+## 修改品牌内容
 
-## 项目结构
+- `site.json`：站名、介绍和后端公开 URL（不能放密钥）
+- `profile.json`：个人定位、能力、匿名项目、教育与技能
+- `assets/style.css`：网站样式
+- `backend/agent-prompt.md`：百炼智能体的系统提示词
+- `backend/server.mjs`：北京百炼应用 API 代理
 
-- `posts/`：文章源文件
-- `site.json`：个人信息
-- `assets/`：样式、分类交互和图标
-- `build.py`：静态页面生成器
-- `.github/workflows/pages.yml`：GitHub Pages 自动发布
-- `_site/`：生成的网站（不提交 Git）
+原始简历和内部客户资料不进入 Git 仓库。本地审阅与知识库候选文件放在被忽略的 `.local/`，构建器不复制这些文件。`.well-known/assetlinks.json` 原样保留。
+
+## 部署
+
+GitHub 仓库的 Settings → Pages → Source 使用 GitHub Actions。推送到 `main` 自动构建并发布 `_site`。只上传生成的网站目录，后端、原始资料和密钥不进入页面产物。
+
+后端独立部署到阿里云函数计算，参阅 [连接指南](docs/bailian-setup.md)。
+
+## 验证
+
+```sh
+.venv/bin/python verify_site.py
+node --test backend/server.test.mjs
+```
+
+后端测试使用模拟百炼响应，不连接真实模型、不产生费用；不能替代上线后的真实知识库验收。

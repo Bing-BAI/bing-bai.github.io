@@ -12,3 +12,71 @@ document.querySelectorAll('.filters').forEach(group => {
     document.querySelector('.filter-status').textContent = `显示 ${count} 篇文章`;
   });
 });
+
+const form = document.querySelector('#ask-form');
+if (form && form.dataset.api) {
+  const endpoint = form.dataset.api;
+  const status = document.querySelector('#agent-status');
+  const question = document.querySelector('#question');
+  const submit = form.querySelector('button');
+  const chips = [...document.querySelectorAll('[data-question]')];
+  const conversation = document.querySelector('#conversation');
+  let ready = false;
+  let busy = false;
+  function setControls() {
+    question.disabled = !ready || busy;
+    submit.disabled = !ready || busy;
+    chips.forEach(b => b.disabled = !ready || busy);
+  }
+  function message(who, text, sources = []) {
+    const box = document.createElement('div'); box.className = `message ${who}`;
+    const label = document.createElement('strong'); label.textContent = who === 'user' ? '你' : '白冰的 AI 助手';
+    const paragraph = document.createElement('p'); paragraph.textContent = text;
+    box.append(label, paragraph);
+    const list = document.createElement('ul');
+    for (const source of sources) {
+      // Render links only to known public pages, never model-supplied HTML or download URLs.
+      try {
+        const url = new URL(source.url);
+        if (url.origin !== 'https://bing-bai.github.io' || !/^\/(about\.html|projects\/[a-z-]+\.html)$/.test(url.pathname)) continue;
+        const li = document.createElement('li'); const link = document.createElement('a');
+        link.href = url.href; link.textContent = `[${source.id}] ${source.title}`;
+        li.append(link); list.append(li);
+      } catch { /* Invalid citations are omitted. */ }
+    }
+    if (list.childElementCount) box.append(list);
+    conversation.append(box);
+  }
+  async function connect() {
+    try {
+      const health = new URL(endpoint); health.pathname = '/health'; health.search = ''; health.hash = '';
+      const response = await fetch(health, {signal:AbortSignal.timeout(10000), credentials:'omit'});
+      ready = response.ok && (await response.json()).ready === true;
+      status.textContent = ready ? '已连接 · 根据公开资料回答，每次提问独立处理。' : '知识助手尚未启用，请稍后再试。';
+    } catch { status.textContent = '暂时无法连接知识助手。请稍后刷新，或先浏览项目介绍。'; }
+    setControls();
+  }
+  chips.forEach(button => button.addEventListener('click', () => {
+    question.value = button.dataset.question; question.focus();
+  }));
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!ready || busy || !question.value.trim()) return;
+    const text = question.value.trim();
+    busy = true; setControls(); message('user', text);
+    status.textContent = '正在检索资料并生成回答…';
+    try {
+      const response = await fetch(endpoint, {method:'POST',credentials:'omit',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({question:text}),signal:AbortSignal.timeout(55000)});
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || '回答暂时不可用，请稍后重试。');
+      if (typeof data.answer !== 'string') throw new Error('回答格式异常，请稍后重试。');
+      message('assistant',data.answer,Array.isArray(data.sources) ? data.sources : []);
+      question.value = '';
+      status.textContent = '回答完成。你可以继续提出一个独立问题。';
+    } catch (error) {
+      status.textContent = error.name === 'TimeoutError' ? '回答超时，请稍后重试。' : (error.message || '连接失败，请稍后重试。');
+    } finally { busy = false; setControls(); question.focus(); }
+  });
+  void connect();
+}
