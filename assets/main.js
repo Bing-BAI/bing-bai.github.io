@@ -30,7 +30,7 @@ if (form && form.dataset.api) {
   }
   function message(who, text, sources = []) {
     const box = document.createElement('div'); box.className = `message ${who}`;
-    const label = document.createElement('strong'); label.textContent = who === 'user' ? '你' : '白冰的 AI 助手';
+    const label = document.createElement('strong'); label.textContent = who === 'user' ? '你' : '白冰的 Agent';
     const paragraph = document.createElement('p'); paragraph.textContent = text;
     box.append(label, paragraph);
     const list = document.createElement('ul');
