@@ -78,7 +78,7 @@ certificates = '<section class="certifications" aria-label="专业认证"><h2>�
     for c in profile.get('certifications', [])
 ) + '</section>'
 social_links = '<div class="social-links" aria-label="社交平台">' + ''.join(
-    f'<a class="social-link" href="{e(profile[key],quote=True)}" target="_blank" rel="noopener noreferrer" aria-label="访问白冰的 {label} 主页（在新标签页打开）"><img src="./assets/icons/{key}.svg" width="26" height="26" alt="" aria-hidden="true"><span>{label}</span><span class="social-arrow" aria-hidden="true">↗</span></a>'
+    f'<a class="social-link" href="{e(profile[key],quote=True)}" target="_blank" rel="noopener noreferrer" aria-label="访问白冰的 {label} 主页（在新标签页打开）"><img src="./assets/icons/{key}.svg" width="26" height="26" alt="" aria-hidden="true"></a>'
     for key, label in [('github', 'GitHub'), ('medium', 'Medium')] if profile.get(key)
 ) + '</div>'
 about = f'<section class="simple-head"><div class="eyebrow">ABOUT BING</div><h1>{e(profile["english_name"])} / {e(profile["name"])}</h1><p>{e(profile["role"])}</p></section><article class="prose about"><p>{e(config["about"])}</p>' + certificates + f'<h2>我的工作方式</h2><p>{e(profile["background"])}</p><p>先明确目标与输入，再梳理用户流程、输出和任务边界，用验收标准检验结果，在迭代中修正技术路径。把业务约束、模型能力和工程交付放在同一个问题里思考。</p><h2>教育与研究</h2><ul>' + ''.join(f'<li>{e(x)}</li>' for x in profile['education']) + '</ul><h2>技术工具</h2><div class="tags">' + ''.join(f'<span>{e(x)}</span>' for x in profile['skills']) + '</div><h2>建立连接</h2>' + social_links + '</article>'
