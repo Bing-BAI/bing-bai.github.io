@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parent
 MANIFEST = ROOT / 'locales/en/reviewed-sources.json'
 
 def sources():
-    return [ROOT / p for p in ('profile.json', 'site.json', 'locales/zh.json')] + sorted((ROOT / 'projects').glob('*.md'))
+    return [ROOT / p for p in ('profile.json', 'site.json', 'locales/zh.json')] + sorted((ROOT / 'projects').glob('*.md')) + [p for p in sorted((ROOT / 'posts').glob('*.md')) if (ROOT / 'locales/en/posts' / p.name).exists()]
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()

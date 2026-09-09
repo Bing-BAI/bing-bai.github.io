@@ -62,7 +62,11 @@ for path in root.rglob('*'):
     assert path.name not in ('.env','profile.json','server.mjs','brand-and-knowledge.md')
     if path.suffix in ('.html','.js','.json','.css'):
         text=path.read_text()
-        for private_marker in ('DASHSCOPE_API_KEY','resume-material','bingbai.jp@gmail.com','JR East','Yahata','Kepco','Corpy','TEPCO','AISIN','Komatsu'):
+        # The public deployment tutorial names the environment variable, never its value.
+        if path.name != '2026-09-09-personal-rag-agent.html':
+            assert 'DASHSCOPE_API_KEY' not in text, path
+        assert not re.search(r'sk-[A-Za-z0-9_-]{20,}', text), path
+        for private_marker in ('resume-material','bingbai.jp@gmail.com','JR East','Yahata','Kepco','Corpy','TEPCO','AISIN','Komatsu'):
             assert private_marker not in text, (path,private_marker)
 print(f'Markdown features, safe rendering, {len(pages)} page links, and private-file exclusion verified.')
 

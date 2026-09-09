@@ -9,5 +9,6 @@
   "projects/edge-localization.md": "66af535e4f7daa10e68a152b8a2be7f447168b8cbc50c04d043a8703bbdf2253",
   "projects/customer-delivery.md": "e2bcb2d0aeda497b101d8f9f40811008f26c00b114b8cb90107a36e1e752c4e1",
   "projects/shovel-edge-ai.md": "2be25a6c961c8067a8d3511bd99c9c9b25830091d709671b5c68be4272c8b173",
-  "projects/sensor-model-compression.md": "1ddd730d88e9a58c1874b79eaa8b6b9495d17716f6f856808f696d1f1b4bef13"
+  "projects/sensor-model-compression.md": "1ddd730d88e9a58c1874b79eaa8b6b9495d17716f6f856808f696d1f1b4bef13",
+  "posts/2026-09-09-personal-rag-agent.md": "e9e9296aa10cd916e9cce3bd743b7e08b57cd72dcbfbcd786689affb46a6bf12"
 }
