@@ -78,7 +78,7 @@ def build_language(lang):
             for code, url, label, selected in [('zh-CN', zh_url, '中', lang == 'zh'), ('en', en_url, 'EN', lang == 'en')]
         ) + '</div>'
         if lang == 'en':
-            content = content.replace('./assets/', '../assets/')
+            content = re.sub(r'((?:href|src)=")([.]{1,2}/)assets/', lambda m: m[1] + ('../' if m[2] == './' else '../../') + 'assets/', content)
         alternates = f'<link rel="alternate" hreflang="zh-CN" href="{zh_url}"><link rel="alternate" hreflang="en" href="{en_url}"><link rel="alternate" hreflang="x-default" href="{zh_url}">'
         nav = ''.join(f'<a href="{prefix}{href}" {"aria-current=page" if key == active else ""}>{label}</a>' for key, href, label in [('home','index.html','[[home]]'), ('archive','archive.html','[[archive]]'), ('about','about.html','[[about]]'), ('ask','ask.html','[[ask]]')])
         return labels(f'''<!doctype html>

@@ -3,11 +3,52 @@ title: From personal knowledge to traceable answers: a Bailian RAG and blog inte
 category: AI Engineering
 summary: Prepare public documents, configure a knowledge base and Agent, deploy the API to Function Compute, and connect GitHub Pages. Verify each layer.
 ---
+
+![Complete knowledge-to-Agent workflow, with ingestion marked TODO](../assets/diagrams/personal-rag-workflow-en.svg)
+
 > Implementation guide, updated 2026-09-09. This site has a document exporter, chat frontend and backend code. The cloud knowledge base, application and deployment remain to be completed. These are deployment instructions, not a report of a live system.
 
 I want visitors to ask questions as well as read a résumé: what have I built, what was my contribution, and how did I handle constraints? Answers should have evidence and link back to the source.
 
 This guide follows the ACP learning sequence of building question answering, improving retrieval, evaluating results and delivering an application. It uses a managed Bailian knowledge base rather than reproducing the entire course implementation. See the [official ACP course repository](https://github.com/AlibabaCloudDocs/aliyun_acp_learning).
+
+## Delivery order: connect the Agent first; ingestion is TODO
+
+Use the nine existing public Markdown documents to validate the knowledge base, Agent, Function Compute API and blog together. The exporter in step 2 already works; bulk ingestion does not block this milestone.
+
+The local second brain already contains a career profile, résumé, eight projects and evidence indexes. The new ingestion directories below are scaffolding, not implemented processing:
+
+```text
+second-brain/
+├── 00-inbox/              New material
+├── 01-profile/            Career and capabilities
+├── 02-resumes/            Master and tailored résumés
+├── 03-projects/           Projects and evidence
+├── 04-knowledge/          Reusable methods
+├── 05-sources/            Sources and versions
+├── 06-reviews/            Reflections
+├── 07-exports/
+│   ├── public/            Future public exports
+│   └── private/           Future private exports
+├── 08-ingestion/          TODO: bulk processing
+│   ├── 00-manifests/      Inventory, hashes and status
+│   ├── 01-extracted/      Format-specific extraction
+│   ├── 02-grouped/        Project and topic grouping
+│   ├── 03-drafts/         Knowledge drafts
+│   ├── 04-review/         Conflicts and disclosure review
+│   ├── 05-ready/          Reviewed knowledge
+│   └── 99-errors/         Failures and retries
+├── 90-templates/
+└── 99-archive/
+```
+
+The existing nine documents stay in the current exporter’s separate output directory. Future ingestion will write reviewed content back to the knowledge layer, followed by separate public and private exports.
+
+Deferred work includes scanning, deduplication, document and code extraction, selected image interpretation, provenance, conflict detection and incremental updates. No full-library processing, bulk model calls or private upload package is performed now.
+
+Introduce LangGraph if the pipeline needs durable state, recovery and review pauses. It orchestrates a workflow rather than representing a knowledge graph. See the [LangGraph documentation](https://docs.langchain.com/oss/python/langgraph/overview).
+
+The proposed relationships are person → project → skill → contribution → evidence. A full knowledge graph or GraphRAG can be evaluated later if cross-project retrieval requires it. Neither is a prerequisite for the first release. See the [GraphRAG documentation](https://microsoft.github.io/graphrag/).
 
 ## Step 1: Define the deliverable
 
