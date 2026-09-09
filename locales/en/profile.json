@@ -135,7 +135,7 @@
       "practice": "Replace “How do we improve model accuracy?” with “How do we make this business decision more reliable?” Consider data, workflows, human review and system design together."
     },
     {
-      "title": "Analyze the structure",
+      "title": "Problem decomposition",
       "principle": "Break complex problems into testable parts and understand their dependencies.",
       "practice": "Work through goals, inputs, user flow, outputs, scope, acceptance criteria and iteration, then define each module’s responsibilities and interfaces."
     },
