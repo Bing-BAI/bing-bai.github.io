@@ -1,0 +1,13 @@
+{
+  "profile.json": "04c2ba379b5906b56167ccca7964158d61fe04a720630689d463433fff23a727",
+  "site.json": "b278db88e28ab70a4845034814440ec60e1be6a3372f5cd28972484f1007c908",
+  "locales/zh.json": "174d32806c27395df49cb6f4d38553fa5f048425ea21294009007217b5b7611e",
+  "projects/visual-product-search.md": "5ab2f0a40fa8c7759f299724721ae2a8fa0bfde90f9b0e885ba10a93a9b38282",
+  "projects/boiler-extraction.md": "634a8472feec24fc83ebf354777fd6ead71b6657303d08ca3caa5b440ee1b864",
+  "projects/driving-diagnosis.md": "0450f606ab372d380b2eceaa0dcb47852c03b886dda1ebe60aaf9b1389109b7b",
+  "projects/visual-inspection.md": "16528a964bb21983851df43046102411240c5e420c93c164031447cb1e8a9cac",
+  "projects/edge-localization.md": "66af535e4f7daa10e68a152b8a2be7f447168b8cbc50c04d043a8703bbdf2253",
+  "projects/customer-delivery.md": "e2bcb2d0aeda497b101d8f9f40811008f26c00b114b8cb90107a36e1e752c4e1",
+  "projects/shovel-edge-ai.md": "2be25a6c961c8067a8d3511bd99c9c9b25830091d709671b5c68be4272c8b173",
+  "projects/sensor-model-compression.md": "1ddd730d88e9a58c1874b79eaa8b6b9495d17716f6f856808f696d1f1b4bef13"
+}

@@ -1,6 +1,8 @@
 from pathlib import Path
 from html.parser import HTMLParser
-from urllib.parse import unquote
+from urllib.parse import unquote, urlsplit
+import json
+import re
 from rendering import markdown
 from project_content import load_profile
 
@@ -41,7 +43,7 @@ class Links(HTMLParser):
     def handle_starttag(self, tag, attrs):
         for key,value in attrs:
             if key in ('href','src') and value and not value.startswith(('#','http','mailto:','data:')):
-                self.refs.append(value.split('#')[0])
+                self.refs.append(urlsplit(value).path)
 pages=list(root.rglob('*.html'))
 for page in pages:
     parser=Links(); parser.feed(page.read_text())
@@ -49,7 +51,7 @@ for page in pages:
         target=(page.parent/unquote(ref)).resolve()
         assert target.is_relative_to(root) and target.is_file(), (page,ref)
 profile = load_profile(Path('.'))
-assert len(pages) == 4 + len(profile['projects']) + len(list((root / 'posts').glob('*.html'))), len(pages)
+assert len(pages) == 2 * (4 + len(profile['projects']) + len(list((root / 'posts').glob('*.html')))), len(pages)
 expected_titles = ['目标', '输入', '用户流程', '输出', '任务边界', '验收标准', '迭代']
 for project in profile['projects']:
     assert [section['title'] for section in project['case_study']] == expected_titles
@@ -63,3 +65,36 @@ for path in root.rglob('*'):
         for private_marker in ('DASHSCOPE_API_KEY','resume-material','bingbai.jp@gmail.com','JR East','Yahata','Kepco','Corpy','TEPCO','AISIN','Komatsu'):
             assert private_marker not in text, (path,private_marker)
 print(f'Markdown features, safe rendering, {len(pages)} page links, and private-file exclusion verified.')
+
+# Both language routes exist and link to the matching page, including deep articles.
+assert set(json.loads(Path('locales/zh.json').read_text())) == set(json.loads(Path('locales/en.json').read_text()))
+english = load_profile(Path('.'), 'en')
+assert [p['slug'] for p in english['projects']] == [p['slug'] for p in profile['projects']]
+for page in pages:
+    text = page.read_text()
+    assert not re.search(r'\[\[\w+\]\]', text), page
+    rel = page.relative_to(root).as_posix()
+    is_en = rel.startswith('en/')
+    assert f'<html lang="{ "en" if is_en else "zh-CN" }">' in text
+    assert text.count('data-language=') == 2
+    routes = re.findall(r'<a href="([^"]+)" lang="[^"]+" hreflang="[^"]+" data-language="([^"]+)"', text)
+    route = rel.removeprefix('en/')
+    for href, lang in routes:
+        expected = root / ('en/' if lang == 'en' else '') / route
+        assert (page.parent / href).resolve() == expected, (page, href)
+for page in (root / 'en').rglob('*.html'):
+    # Only the brand character and the language switch intentionally stay Chinese.
+    text = re.sub(r'<[^>]*>', '', page.read_text())
+    remaining = re.sub('[冰中]', '', text)
+    assert not re.search(r'[\u3400-\u9fff]', remaining), page
+print('Bilingual routes, switch targets, locale completeness and English copy verified.')
+
+for page in pages:
+    text = page.read_text()
+    for ref in re.findall(r'href="([^"]+)"', text):
+        url = urlsplit(ref)
+        if url.scheme or url.netloc or not url.fragment:
+            continue
+        destination = (page.parent / unquote(url.path)).resolve() if url.path else page
+        assert f'id="{unquote(url.fragment)}"' in destination.read_text(), (page, ref)
+print('All static section links verified.')

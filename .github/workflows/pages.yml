@@ -24,8 +24,12 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Install Markdown renderer
         run: pip install -r requirements.txt
+      - name: Check translation review
+        run: python3 check_translations.py
       - name: Build blog
         run: python3 build.py
+      - name: Verify bilingual site
+        run: python3 verify_site.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

@@ -78,3 +78,7 @@ node --test backend/server.test.mjs
 修改公开项目或认证后，运行 `python3 export_knowledge.py`，会在被 Git 忽略的 `.local/bailian-knowledge/` 生成九份 Markdown，并更新 `.local/bailian-knowledge.zip`。脚本仅读取整理过的 `profile.json` 和 `projects/*.md`，不读取原始资料、不执行上传。审阅后，在百炼替换对应文件并等待索引更新。
 
 项目正文须依次包含七个二级标题：目标、输入、用户流程、输出、任务边界、验收标准、迭代。标题、卡片摘要和 `knowledge_id` 在 `profile.json` 维护。现有知识文档 ID 保持稳定，调整展示顺序不会改变上传文件名。新增项目时同步维护后端来源白名单，并运行后端测试验证映射。
+
+## 中英双语
+
+中文保留根路径，英文位于 /en/。两种语言共用构建器和样式，内容分开维护，切换保留对应文章和章节。详细编辑流程与译文同步检查见 [双语维护说明](docs/bilingual-maintenance.md)。

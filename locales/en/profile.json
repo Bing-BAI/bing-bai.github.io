@@ -1,0 +1,208 @@
+{
+  "name": "Bing Bai",
+  "role": "AI Solutions Engineer / FDE",
+  "headline": "Taking AI beyond experiments,\ninto real business.",
+  "intro": "Starting with business problems, connecting models, engineering and client delivery.",
+  "capabilities": [
+    {
+      "title": "From problem to solution",
+      "text": "Understand business goals, identify data, compute and field constraints, and design a testable technical approach.",
+      "tags": "Solution design / PoC"
+    },
+    {
+      "title": "From model to system",
+      "text": "Connect computer vision, retrieval and model capabilities to backends, databases and business workflows.",
+      "tags": "Computer vision / RAG / Backend"
+    },
+    {
+      "title": "From validation to delivery",
+      "text": "Handle offline environments, edge compute and system integration so the technology works in the field.",
+      "tags": "Deployment / Edge AI"
+    }
+  ],
+  "projects": [
+    {
+      "slug": "visual-product-search",
+      "title": "Industrial parts recommendation: from visual measurement to a business system",
+      "domain": "Industrial parts · Visual recognition and retrieval",
+      "role": "Technical lead · Technical direction, algorithm validation and system delivery",
+      "challenge": "How can specification data support explainable recommendations when product photos are missing?"
+    },
+    {
+      "slug": "boiler-extraction",
+      "title": "Nameplate extraction: balancing quality, compute and review",
+      "domain": "Equipment verification · VLM extraction",
+      "role": "AI Engineer · Fine-tuning, deployment and evaluation",
+      "challenge": "Extract structured fields from blurred, reflective or incomplete nameplates while preserving uncertainty."
+    },
+    {
+      "slug": "driving-diagnosis",
+      "title": "Dual-camera driving diagnosis: turning complex judgments into traceable evidence",
+      "domain": "Driver training · Multi-module vision analysis",
+      "role": "Technical lead · Requirements, technical validation and MVP proposal",
+      "challenge": "How can two video streams provide evidence that driving instructors can review?"
+    },
+    {
+      "slug": "visual-inspection",
+      "title": "Equipment anomaly detection: from single frames to combined evidence",
+      "domain": "Railway equipment · Visual inspection",
+      "role": "Technical lead · Solution upgrades, evaluation and delivery coordination",
+      "challenge": "Combine limited anomaly samples, segmentation and consecutive frames into a testable inspection pipeline."
+    },
+    {
+      "slug": "edge-localization",
+      "title": "Visual localization quantization: diagnosing accuracy loss for edge deployment",
+      "domain": "Edge AI · Model optimization and delivery",
+      "role": "AI Engineer · Error diagnosis, quantization and deployment package",
+      "challenge": "After shrinking a model, how do we check that it still retains its localization capability?"
+    },
+    {
+      "slug": "customer-delivery",
+      "title": "Video analytics SaaS: from client PoCs to product decisions",
+      "domain": "Manufacturing and logistics · Video analytics and delivery",
+      "role": "AI Engineer / FDE · Client deployment, troubleshooting and product review",
+      "challenge": "Beyond recognition quality, can clients use and maintain the solution, and can delivery scale?"
+    },
+    {
+      "slug": "shovel-edge-ai",
+      "title": "Machinery activity recognition: reaching the field with limited resources",
+      "domain": "Industry collaboration · Activity recognition and edge deployment",
+      "role": "Machine Learning Researcher · Model compression and field validation",
+      "challenge": "How can time-series recognition balance accuracy and real-time processing on constrained hardware?"
+    },
+    {
+      "slug": "sensor-model-compression",
+      "title": "Sensor selection and model compression: reducing system burden with sparse training",
+      "domain": "Master’s research · Efficient activity recognition",
+      "role": "Master’s research · Sparse optimization, sensor selection and pruning",
+      "challenge": "Can training reduce both sensor requirements and model size while retaining recognition quality?"
+    }
+  ],
+  "background": "Around three years of experience delivering tailored enterprise AI solutions, spanning computer vision, multimodal and language models, model compression, backend engineering, and cloud and edge deployment.",
+  "education": [
+    "Tokyo Institute of Technology · Master of Engineering (Artificial Intelligence)",
+    "Sun Yat-sen University · Bachelor’s degree in Software Engineering"
+  ],
+  "certifications": [
+    {
+      "title": "Alibaba Cloud LLM Certification (ACP)",
+      "issuer": "Alibaba Cloud"
+    }
+  ],
+  "focus": "Turning AI into a production system that keeps running.",
+  "about_paragraphs": [
+    "I’m Bing Bai, an AI solutions engineer with around three years of experience in tailored enterprise AI projects. Starting from a client’s business goals, I break problems into data, model, system and deployment tasks, taking solutions from requirements and proof of concept through delivery and continued improvement.",
+    "My technical background spans computer vision, multimodal and language model applications, model compression, backend engineering, and cloud and edge deployment. When data, connectivity, compute or budgets are limited, I use experiments and evaluation to establish a feasible technical approach, its limits and the trade-offs involved.",
+    "I value explainable delivery. Visualizations, comparative experiments, failure cases and clear instructions help clients understand what a system does, why it produces a result and where human review is still needed. Cost assessment is part of solution design, including model calls, compute, deployment, maintenance and iteration.",
+    "I take on technical leadership and delivery coordination, helping break down tasks, review technical work and align clients and engineers on risks, priorities and progress. I aim to grow alongside projects and clients: building shared understanding through training and feedback, and turning field issues into improvements that make both the system and its users more capable."
+  ],
+  "goal": {
+    "statement": "Deliver explainable, cost-conscious AI production systems that keep running and improving.",
+    "description": "This is the direction I am working toward: from completing individual AI tasks to designing human–AI collaboration, then coordinating models, agents, tools, databases and automation. People retain responsibility for goals, judgment and resource allocation, while systems handle suitable execution tasks and improve through evaluation, feedback and human review."
+  },
+  "value_propositions": [
+    {
+      "title": "Turn business problems into deliverable solutions",
+      "text": "Start with requirements, data and field constraints. Define goals, inputs, workflows, outputs, scope and acceptance criteria before implementing models and systems."
+    },
+    {
+      "title": "Make results explainable and verifiable",
+      "text": "Use visualizations, evaluation results and failure cases to show the evidence behind decisions, the system’s limits and where people need to participate."
+    },
+    {
+      "title": "Include cost in technical decisions",
+      "text": "Compare quality, latency, API costs, compute and maintenance effort. Use evidence to decide whether to adopt, adjust, invest further or stop a technical approach."
+    },
+    {
+      "title": "Grow alongside projects and clients",
+      "text": "Share risks, learn from feedback and document methods during delivery. Training, documentation and retrospectives improve client capability and the next delivery."
+    }
+  ],
+  "methods": [
+    {
+      "title": "Simplify the problem",
+      "principle": "Separate signal from noise and retain the minimum conditions that determine the outcome.",
+      "practice": "Clarify who needs to do what and what a useful result looks like, then distinguish essential inputs and constraints from details that can wait."
+    },
+    {
+      "title": "Use analogies",
+      "principle": "Borrow structures that have worked in other domains, turning a large leap into two smaller steps.",
+      "practice": "Map new requirements to familiar retrieval, classification, control or workflow problems. Validate reusable parts before addressing differences between contexts."
+    },
+    {
+      "title": "Reframe the question",
+      "principle": "When progress stalls, check whether the question itself is narrowing the options.",
+      "practice": "Replace “How do we improve model accuracy?” with “How do we make this business decision more reliable?” Consider data, workflows, human review and system design together."
+    },
+    {
+      "title": "Analyze the structure",
+      "principle": "Break complex problems into testable parts and understand their dependencies.",
+      "practice": "Work through goals, inputs, user flow, outputs, scope, acceptance criteria and iteration, then define each module’s responsibilities and interfaces."
+    },
+    {
+      "title": "Work backward",
+      "principle": "Start with an acceptable outcome and infer the conditions needed to achieve it.",
+      "practice": "Define acceptance checks, evidence visible to users and affordable costs first. Work backward to data requirements, system capabilities, deployment conditions and the smallest useful experiment."
+    },
+    {
+      "title": "Induce and generalize",
+      "principle": "Derive patterns from concrete work, then test whether those patterns transfer to new settings.",
+      "practice": "Turn experience into evaluation sets, standards, troubleshooting procedures and reusable components. Recheck assumptions before applying a method elsewhere, and revise it using new results."
+    }
+  ],
+  "career": [
+    {
+      "title": "Enterprise IT and data foundations",
+      "text": "Early work in data management and technical support at a financial institution developed my experience with SQL, data validation, access workflows and enterprise systems."
+    },
+    {
+      "title": "AI research and edge engineering",
+      "text": "Master’s research and industry collaboration explored activity recognition, sensor selection and model compression, testing algorithm choices against memory, runtime and field constraints."
+    },
+    {
+      "title": "Enterprise AI delivery and technical leadership",
+      "text": "Working in English across several industries, I progressively took on model and backend development, client deployment, solution evaluation, task planning and delivery coordination."
+    }
+  ],
+  "languages": [
+    "Chinese · Native",
+    "English · Working language (TOEIC 805)",
+    "Japanese · JLPT N2"
+  ],
+  "skill_groups": [
+    {
+      "title": "Vision and models",
+      "items": [
+        "Object detection and segmentation",
+        "Video analysis",
+        "Anomaly detection",
+        "PyTorch",
+        "OpenCV",
+        "Model compression"
+      ]
+    },
+    {
+      "title": "LLMs and agents",
+      "items": [
+        "VLM / LLM",
+        "RAG",
+        "Vector retrieval",
+        "LoRA",
+        "Agent workflows",
+        "Evaluation-driven optimization"
+      ]
+    },
+    {
+      "title": "Engineering and delivery",
+      "items": [
+        "FastAPI",
+        "PostgreSQL",
+        "Docker",
+        "GCP / AWS",
+        "ONNX",
+        "CI/CD",
+        "Cost assessment"
+      ]
+    }
+  ]
+}
