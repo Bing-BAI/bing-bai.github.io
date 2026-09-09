@@ -178,7 +178,10 @@
         "Anomaly detection",
         "PyTorch",
         "OpenCV",
-        "Model compression"
+        "Model compression",
+        "YOLO",
+        "DETR",
+        "SAM"
       ]
     },
     {
