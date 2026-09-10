@@ -1,6 +1,6 @@
 ## Goal
 
-Extract manufacturing year and manufacturer brand from photographs of nameplates on customers' water heaters, providing equipment information for KEPCO's replacement screening and after-sales inspections. The task focused on converting images into fields; subsequent business processes would combine those fields with other records to make decisions.
+Extract manufacturing year and manufacturer brand from photographs of nameplates on customers' water heaters, providing equipment information for an energy-service client's replacement screening and after-sales inspections. The task focused on converting images into fields; subsequent business processes would combine those fields with other records to make decisions.
 
 I was responsible for data preparation, VLM fine-tuning validation, cloud execution and evaluation. The focus was reproducible verification and clear handling of photographs that did not support a reliable answer.
 
