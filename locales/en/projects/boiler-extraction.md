@@ -1,52 +1,37 @@
 ## Goal
 
-Extract manufacturing year and manufacturer from field equipment nameplates to support verification. With blur, reflections or missing labels, the system should preserve uncertainty and return empty values for information it cannot confirm.
+Extract manufacturing year and manufacturer brand from photographs of nameplates on customers' water heaters, providing equipment information for KEPCO's replacement screening and after-sales inspections. The task focused on converting images into fields; subsequent business processes would combine those fields with other records to make decisions.
 
-I handled data preparation, VLM fine-tuning, cloud deployment, and quality and cost evaluation. The goal was a repeatable structured extraction pipeline with an explicit role for human review.
+I was responsible for data preparation, VLM fine-tuning validation, cloud execution and evaluation. The focus was reproducible verification and clear handling of photographs that did not support a reliable answer.
 
 ## Inputs
 
-- Field nameplate images spanning different levels of clarity, reflection and completeness.
-- Year and manufacturer annotations, with reference answers for independent evaluation.
-- LoRA training data and multimodal models of different sizes.
-- GCP GPU resources, Docker configuration, VRAM limits and cloud costs.
+Inputs included field photographs, year and brand annotations linked to filenames, and the model and container environment needed for training and evaluation. Images varied in clarity, reflections and label completeness.
 
-Training feasibility was part of model selection. A larger model could not be the default simply because of its size if it could not be fine-tuned within available resources.
+Unknown values needed separate annotation for brand and year. Resource availability was also a constraint: experiments had to run within the available GPU memory and environment, rather than selecting a model by parameter count alone.
 
 ## User flow
 
-1. Submit a nameplate image.
-2. Extract year and manufacturer in a defined format, leaving uncertain fields empty.
-3. Normalize year formats and align outputs with verification data.
-4. Review the original image when results are missing, unclear or potentially wrong.
-5. Record failure types to guide data collection and the next evaluation.
+Given a photo, the model was instructed to return `YEAR; BRAND`, using `None` for fields it could not confirm. Code parsed and normalized the fields for comparison with reference information. Missing, ambiguous or potentially fabricated values should be checked against the original image by a person before supporting business screening.
+
+During development, batch predictions, field-level comparisons and failure reviews identified reliable inputs and remaining problems. A complete business workbench and downstream integration were separate from this model validation task.
 
 ## Outputs
 
-I prepared the LoRA dataset and built structured outputs, year normalization, ground-truth alignment, batch inference and failure review.
+I worked on annotation conversion, Qwen2.5-VL-3B LoRA validation, GCP/Docker execution and batch evaluation. The 7B model exceeded available memory under the training configuration used, so I selected a 3B configuration that could complete training and be reproduced.
 
-I fine-tuned Qwen2.5-VL-3B with LoRA and reproduced experiments using a GCP VM and Docker. VRAM constraints on larger models meant that selection considered capability, training feasibility and cloud costs together.
-
-Evaluation separated exact matches across both fields from year and manufacturer correctness. Failures were traced to input conditions such as blur, reflection and incomplete labels, helping clients distinguish usable results from those needing review.
+Evaluation considered year, brand, joint matches and whether genuinely unknown fields were left empty, retaining predictions and error cases. These deliverables helped explain model capabilities, input limitations and priorities for further investment.
 
 ## Scope
 
-- The task extracts specified image fields; it is not a safety inspection or final equipment identity certification.
-- Outputs support verification. Missing information is not inferred.
-- My contribution covered data, fine-tuning, runtime and evaluation, rather than the entire equipment verification process.
-- Original client images, internal field records and specific experiment metrics are not public.
+Manufacturing year is not installation date or remaining service life. Field extraction does not itself constitute a safety inspection, fault diagnosis or final replacement decision. The images depict customers' existing equipment; extracted information supports the energy-service business.
+
+An instruction to return an empty value does not eliminate fabricated answers. Evaluation must normalize unknown values and year formats and define brand matching rules, distinguishing strict matches from accepted name variants. Results from different model versions and experiment stages should not be merged directly.
 
 ## Acceptance criteria
 
-These are evaluation criteria, not disclosed client acceptance thresholds.
-
-- Consistent fields and formats, explicit year normalization and inspectable empty-value handling.
-- Separate training and independent evaluation data; report joint and individual field performance.
-- Evidence for failure conditions and a clear scope for human review.
-- Reproducible inference and evaluation in the recorded GPU and container environment, with resource requirements stated.
+Acceptance should cover fields and output format, performance on known and unknown values, failure conditions, runtime environment and resource requirements. Data, model and processing rules need to be fixed, and training/evaluation separation checked, before deciding which outputs can be accepted automatically and which require human review.
 
 ## Iteration
 
-I first defined correct extraction, then connected data, inference and reference answers. VRAM limits informed model size, followed by runnable fine-tuning experiments, independent evaluation and error review.
-
-Further improvements should target observed failure types and compare quality gains with resource costs. Explainable failure categories and a clear empty-value policy matter alongside average accuracy.
+I first narrowed equipment understanding to two verifiable fields and related the task to structured information extraction. I then asked whether the business needed an apparently complete answer or evidence that could be checked. This led to separate work on annotation, training, parsing and evaluation. Working backward from review requirements shaped outputs and data conditions. The resulting data and evaluation process could extend to new equipment fields, with renewed validation for different brands, image quality and operating contexts.
