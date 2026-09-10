@@ -1,6 +1,6 @@
 ## Goal
 
-CONFIDE WA is a video analysis platform for factory and warehouse operations. It turns observations such as body and hand positions into verifiable work events and time statistics. This case focuses on inspection and sorting at an the logistics client logistics warehouse: could automated statistics reduce manual video review and timing, and provide evidence for process improvement?
+CONFIDE WA is a video analysis platform for factory and warehouse operations. It turns observations such as body and hand positions into verifiable work events and time statistics. This case focuses on inspection and sorting at a customer's logistics warehouse: could automated statistics reduce manual video review and timing, and provide evidence for process improvement?
 
 Using the company's CONFIDE Workflow Analysis platform, the team evaluated operation durations, differences in the composition of two workers' activities, and time at or away from the workstation. I contributed to backend development, workflow troubleshooting and the customer proof of concept (PoC), working with the team to check results and applicability.
 
@@ -28,7 +28,7 @@ For example, a hand passing through the same region might be placing a product o
 
 This was a warehouse workstation analysis PoC using object detection and state machines to organize business events. Similar aggregate durations do not establish that individual event timestamps are correct. Comparisons of worker efficiency also require item counts, product mix and work paths.
 
-The the logistics client validation ran on company servers. I also supported offline Windows deployment and local training for a separate customer project with different data and deployment constraints. The findings here apply to the the logistics client validation.
+The logistics client validation ran on company servers. I also supported offline Windows deployment and local training for a separate customer project with different data and deployment constraints. The findings here apply to the logistics client validation.
 
 ## Acceptance criteria
 
