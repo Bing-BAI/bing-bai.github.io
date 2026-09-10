@@ -1,53 +1,39 @@
 ## Goal
 
-Validate video analytics SaaS at manufacturing and logistics sites through PoC deployment, issue resolution and product review. Client evidence would inform which capabilities deserved further investment.
+CONFIDE WA is a video analysis platform for factory and warehouse operations. It turns observations such as body and hand positions into verifiable work events and time statistics. This case focuses on inspection and sorting at an Elecom logistics warehouse: could automated statistics reduce manual video review and timing, and provide evidence for process improvement?
 
-I handled backend-related work, deployment and technical troubleshooting, and helped translate limits in models, data and workflows into product decisions. Value included usable delivery and recognizing approaches that would not scale.
+Using Corpy's CONFIDE Workflow Analysis platform, the team evaluated operation durations, differences in the composition of two workers' activities, and time at or away from the workstation. I contributed to backend development, workflow troubleshooting and the customer proof of concept (PoC), working with the team to check results and applicability.
 
 ## Inputs
 
-- Factory or warehouse video, with questions about process duration, differences in worker efficiency and time away from workstations.
-- Work areas, action definitions, annotations and local training data.
-- Platform, model, database and deployment dependencies.
-- Network, hardware and privacy constraints, plus clients’ configuration and maintenance capacity.
+Inputs included videos of two workers, a manually defined list of business activities, body and hand annotations, work regions and action conditions. Selected short clips supported detailed operation analysis; longer original videos supported absence statistics. Each analysis was checked against manual records.
 
-Video could include variable frame rates, blind spots, occlusion and rapid consecutive actions. Some data had to stay onsite for training and validation.
+Challenges included variable frame rates, occlusion, blind spots and rapid consecutive actions. Activities with different business meanings could take place in the same region with very similar hand trajectories.
 
 ## User flow
 
-1. Prepare the platform and dependencies onsite, upload video and check input requirements.
-2. Prepare and annotate data, training locally when needed.
-3. Run inference and configure workflows; inspect timelines, statistics and detections.
-4. Compare results with original footage and report missed detections, misalignment or configuration difficulties.
-5. Resolve tractable issues and review scenarios that need changes, simplification or discontinued investment.
+Project staff first confirmed the activities and timing definitions with the site manager, inspected the videos and established manual references. They then selected models, configured detection regions and workflows, ran analysis, and reviewed video overlays, timelines and aggregate statistics.
+
+Visual detection supplied body and hand observations. Region and persistence conditions produced candidate actions, which a state machine organized into measurable work states. Reviewing errors against the original footage helped distinguish input, detection and workflow configuration problems.
 
 ## Outputs
 
-I supported local training and PoC delivery, investigating model, data and configuration issues behind missed detections and field feedback. Evaluation distinguished relatively usable absence statistics from process-time analysis affected by overlapping regions, rapid actions and blind spots.
+I contributed to backend and data migration work, workflow fixes, and video preprocessing, configuration and validation for Elecom. When variable frame rates caused analysis results to drift from the playback timeline, I used FFmpeg to standardize frame rates and checked alignment against the video.
 
-Troubleshooting identified variable frame rates as a cause of playback/detection timeline mismatch. I used FFmpeg to normalize frame rates and documented offline Windows deployment packages, video requirements and troubleshooting procedures.
+The PoC produced operation timings, comparisons between the two workers, presence and absence statistics, validation recordings and reports. Results varied by task: absence statistics performed relatively well under the test conditions, while detailed operation timing remained limited by shared regions, rapid actions and blind spots.
 
-Product review showed that complex self-service configuration transferred algorithmic and operational burdens to clients without AI experience. My analysis supported the team’s decision to stop investment that could not scale, and proposed controlled templates, guided flows and preset workflows.
+For example, a hand passing through the same region might be placing a product or one of several trays. A state machine cannot recover missing object information from hand position alone. Improvement options included camera and work-region adjustments, grouping indistinguishable actions, adding object annotations, and assessing the benefit and cost of multiple views.
 
 ## Scope
 
-- My contribution was deployment, backend and troubleshooting work, PoC evaluation and product review, not independent development of the whole SaaS product.
-- Useful statistics in one area do not establish reliable recognition of all actions. Input fixes do not eliminate model errors.
-- Controlled templates and related ideas were proposed directions, not released features.
-- Investment decisions were made by the team; I contributed analysis and delivery feedback.
+This was a warehouse workstation analysis PoC using object detection and state machines to organize business events. Similar aggregate durations do not establish that individual event timestamps are correct. Comparisons of worker efficiency also require item counts, product mix and work paths.
+
+The Elecom validation ran on Corpy servers. I also supported offline Windows deployment and local training for a separate Canon customer project with different data and deployment constraints. The findings here apply to the Elecom validation.
 
 ## Acceptance criteria
 
-These summarize client validation practices; specific sign-off conditions are not public.
-
-- Compare each business metric with human results and identify reliable and failing conditions.
-- Verify detection timelines against video, reproduce issues and check fixes.
-- Run local preparation, annotation, training and validation within the agreed environment with documented dependencies.
-- Evaluate client configuration and maintenance effort alongside model quality.
-- Support investment recommendations with evidence and identify necessary changes to scenarios, workflows or features.
+Validation compared each business metric with manual results and documented usable conditions, failure cases and improvement costs. Further acceptance checks should cover event start and end times, missed and false events, performance across workstations, and the effort required for staff to review results.
 
 ## Iteration
 
-The focus expanded from whether models and systems ran to whether results were trustworthy, clients could use them and delivery could be repeated affordably. Camera changes, work-area adjustments, merged process steps, more annotations and dual cameras all required benefit/cost comparisons.
-
-The experience reinforced collaborative validation, attention to user burden, and willingness to change or stop a technical approach while documenting lessons for more explainable and maintainable delivery.
+I first reduced “improve operational efficiency” to “obtain trustworthy work records,” connecting the problem to visual events and state transitions. When results fell short, I reconsidered whether the footage could distinguish the actions, then separated timing, detection, regions, states and statistics. Working backward from verifiable results helped define input and annotation requirements and preserve configuration and troubleshooting lessons for the next workstation.
