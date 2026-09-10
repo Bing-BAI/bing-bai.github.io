@@ -1,6 +1,6 @@
 ## Goal
 
-Help staff at home improvement stores (Home Centers) match an unfamiliar screw, nut or washer to verifiable candidates in Yahata Neji's product catalog. The difficulty was both distinguishing similar specifications and reducing the number of specialist attributes staff had to enter.
+Help staff at home improvement stores (Home Centers) match an unfamiliar screw, nut or washer to verifiable candidates in the manufacturer's product catalog. The difficulty was both distinguishing similar specifications and reducing the number of specialist attributes staff had to enter.
 
 I was responsible for application development and delivery spanning algorithms, frontend, backend and hierarchical account management. I also compared approaches and used a Claude prototype to explore how an agent could simplify in-store queries. In phase one, I developed recognition and matching algorithms and the backend for a product-matching web application. Phase two expanded the APIs, frontend, backend and account management, followed by exploration of interactions between a language model and catalog tools.
 
