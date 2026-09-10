@@ -1,54 +1,41 @@
 ## Goal
 
-Help store staff find possible product specifications from a phone photograph of an unidentified part. Visual results must become candidates that people can verify, supported by user management, search history and an operational foundation.
+Help staff at home improvement stores (Home Centers) match an unfamiliar screw, nut or washer to verifiable candidates in Yahata Neji's product catalog. The difficulty was both distinguishing similar specifications and reducing the number of specialist attributes staff had to enter.
 
-As technical lead, I connected client constraints, algorithm validation, business system design and cost assessment. The central question was how to use existing specifications when most catalog entries had no product photographs.
+I was responsible for application development and delivery spanning algorithms, frontend, backend and hierarchical account management. I also compared approaches and used a Claude prototype to explore how an agent could simplify in-store queries. In phase one, I developed recognition and matching algorithms and the backend for a product-matching web application. Phase two expanded the APIs, frontend, backend and account management, followed by exploration of interactions between a language model and catalog tools.
+
+Query records also give the manufacturer signals about demand: what users searched for, which specifications they selected and which candidates appeared. Combining those records with sales, inventory and lead times is a potential subsequent use.
 
 ## Inputs
 
-- Photos of parts and a reference object for scale conversion.
-- Structured catalog specifications, including dimensions and thread pitch, and attributes that could form retrieval text.
-- Annotations and reference specifications for detection, segmentation, measurement and matching.
-- Store information, user roles and search history.
+Inputs included part photographs, reference objects where measurement was needed, real catalog part numbers and specifications, and attributes selected by users or inferred by a model. Most products lacked photographs, so the approach could not assume a complete product image library.
 
-Camera angles, lighting and reflections varied, and the client could not photograph the entire catalog. A complete product image library was therefore not a viable prerequisite.
+Shape, dimensions, thread pitch, material and surface treatment have different levels of visual observability. Uncertainty should remain explicit for attributes that a photo cannot reliably establish. Precise dimensional matching requires additional capture conditions, measurement or human verification.
 
 ## User flow
 
-The basic store workflow was:
+In the existing application, users selected attributes and took a guided photograph. The system detected and segmented the part, converted image measurements using a reference object, estimated thread pitch, and combined measurements with catalog specifications to return candidates. Query history and administrative exports supported review and analysis.
 
-1. Submit a photograph; detect the target and segment the part and reference object.
-2. Align orientation, convert scale and estimate thread pitch to obtain comparable measurements.
-3. Match specifications and return the top three candidates for the user to check.
-4. Record searches; allow authorized managers to review history and audit information.
+To reduce input effort, I tested another interaction through a Claude Skill: the model inferred attributes from a photo, requested additional views when necessary, called Python tools to filter a CSV catalog, and presented the top three candidates with explanations. If no candidates matched, it could adjust filters and query again.
 
-A later design introduced VLM-based visual attributes, retrieval from a vector index of specification text, and measurement-based reranking. This was architecture and feasibility work, separate from the implemented basic features.
+This was a demonstration prototype. Model API integration was staged after customer approval. Vector retrieval over specification text was a separate design option, distinct from the demonstrated CSV tool workflow.
 
 ## Outputs
 
-I developed detection, segmentation, PCA-based orientation correction, reference-based scale conversion, DFT thread-pitch estimation and specification matching, then evaluated measurement and recommendation performance.
+Algorithm work included detection and segmentation experiments, PCA-based in-plane alignment, reference-based scale conversion, DFT-based thread-pitch estimation and specification matching. Engineering deliverables included the product-matching web application, a FastAPI/PostgreSQL backend, APIs, frontend pages, hierarchical account management, query history and exports for store staff and manufacturer administrators.
 
-Engineering outputs included a containerized demo, a FastAPI and PostgreSQL backend, role-based permissions, JWT, search history and auditing. These gave the visual demo a manageable, traceable business foundation.
-
-I also designed a layered RAG architecture and estimated token usage and costs for several image-model APIs to support budget and commercialization decisions.
+The model-related work produced a Claude Skill prototype and code for attribute message construction, enum validation and handling low-confidence fields. The model handled visual semantics and interaction; catalog tools supplied product records; measurement and user verification supplied precise specifications.
 
 ## Scope
 
-- My work covered client constraints, technical direction, algorithm validation, system design and related development, and cost assessment.
-- A containerized demo and backend do not imply production deployment across all scenarios. VLM and vector retrieval work remained design and feasibility work.
-- Recommendations assist product lookup and still require specification checks. Sample results are not guarantees for arbitrary photography conditions.
+Candidate recommendations assist lookup; a photograph cannot always uniquely identify a part. PCA only corrects in-plane orientation. Reference-based measurement remains sensitive to perspective, resolution and relative position. A relative matching score is not a probability that a purchase is correct.
+
+Results on controlled samples do not establish in-store performance across an expanded catalog. The Skill demonstration was not a production web agent, and queries are not purchases. Supply-chain analysis remains a direction for further work with query data, without quantified supply-chain benefits to date.
 
 ## Acceptance criteria
 
-These summarize the documented validation approach; client sign-off terms and experiment metrics are not public.
-
-- Check dimension and pitch errors and top-three matches against reference specifications, with sample and photography conditions stated.
-- Reproduce the image-to-candidate flow, verify structured outputs, search history and permissions.
-- State image assumptions and token estimates when comparing API costs.
-- Evaluate future RAG work against the existing approach on the same dataset for recall, reranking, latency and cost.
+Validation requires fixed catalog versions, test images and reference products. Checks should separately cover measurement error, candidate hits, input effort and completion time, and handling of no-match results and poor images. Engineering checks should confirm query permissions, history and traceability.
 
 ## Iteration
 
-I first built a CV pipeline around measurable geometry, then added users, permissions and history to connect results to a business workflow. Missing catalog photos then prompted a different product representation: specification text combined with visual attribute extraction.
-
-The experience reinforced two questions: what data do we actually have, and how can someone verify the result? Further value should be explained through recommendation quality and cost, rather than the number of models added.
+I first reduced “identify every part” to “find verifiable candidates,” using catalog retrieval and geometry for the parts that could be established reliably. When customer feedback highlighted interaction complexity, I reframed the question around reducing manual attribute selection and used a Skill to test the division of work between model and tools. Working backward from real part numbers and result verification shaped interfaces, data and capture requirements. Effective components could then become reusable attribute schemas, tools and evaluation methods.
