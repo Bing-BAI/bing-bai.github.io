@@ -65,6 +65,7 @@ def build_language(lang):
     (OUT / 'posts').mkdir()
     if lang == 'zh':
         shutil.copytree(ROOT / 'assets', OUT / 'assets', dirs_exist_ok=True)
+        shutil.copyfile(ROOT / 'resume.pdf', OUT / 'resume.pdf')
     if lang == 'zh' and (ROOT / '.well-known').exists():
         shutil.copytree(ROOT / '.well-known', OUT / '.well-known', dirs_exist_ok=True)
 
@@ -81,6 +82,7 @@ def build_language(lang):
             content = re.sub(r'((?:href|src)=")([.]{1,2}/)assets/', lambda m: m[1] + ('../' if m[2] == './' else '../../') + 'assets/', content)
         alternates = f'<link rel="alternate" hreflang="zh-CN" href="{zh_url}"><link rel="alternate" hreflang="en" href="{en_url}"><link rel="alternate" hreflang="x-default" href="{zh_url}">'
         nav = ''.join(f'<a href="{prefix}{href}" {"aria-current=page" if key == active else ""}>{label}</a>' for key, href, label in [('home','index.html','[[home]]'), ('archive','archive.html','[[archive]]'), ('about','about.html','[[about]]'), ('ask','ask.html','[[ask]]')])
+        nav += f'<a href="{base}resume.pdf">Resume</a>'
         return labels(f'''<!doctype html>
     <html lang="{'en' if lang == 'en' else 'zh-CN'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
     <title>{e(title)} · {e(config['title'])}</title><meta name="description" content="{e(description or config['description'], quote=True)}">
